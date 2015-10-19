@@ -5,12 +5,13 @@ import java.util.Date;
 import java.util.List;
 
 import javax.inject.Named;
-import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
+
+import com.atnow.ofy.OfyService;
+import com.googlecode.objectify.ObjectifyService;
 
 import com.atnow.helper.Constants;
 import com.atnow.model.Task;
-import com.atnow.helper.PMF;
+import com.atnow.model.UserDetail;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Nullable;
@@ -38,31 +39,25 @@ public class TaskAPI {
 	@SuppressWarnings("unchecked")
 	public List<Task> listTasks(@Nullable @Named("limit") String limit, 
 			@Nullable @Named("order") String order) throws OAuthRequestException, IOException {
-		PersistenceManager pm = PMF.get().getPersistenceManager();
-		try {
-			Query query = pm.newQuery(Task.class);
-			if (limit == null) {
-				limit = DEFAULT_LIMIT;
-			}
-			query.setRange(0, new Long(limit));
-			return (List<Task>) pm.newQuery(query).execute();
-		} finally {
-			pm.close();
-		}
-		
+		return null;
+	}
+
+	public List<Task> listTasksByPrice(@Nullable @Named("limit") String limit,
+			@Nullable @Named("order") String order, @Named("price")float price){
+		System.out.println("Price is "+price);
+		List<Task> tasks = OfyService.ofy().load().type(Task.class).filter("price >", price).list();
+		return tasks;
 	}
 	
 	@ApiMethod(name = "tasks.insert")
 	public Task insert(Task task, User user) throws OAuthRequestException, IOException {
 		if (user != null) {
+			task.setRequester(OfyService.ofy().load().type(UserDetail.class).id(user.getUserId()).now());	
 			task.setTimeRequested(new Date());
-			System.out.println(user);
-			task.setRequesterId(user.getUserId());
 			task.setCompleted(false);
+			OfyService.ofy().save().entity(task).now();
 			//TODO: set user location in task
-			PersistenceManager pm = PMF.get().getPersistenceManager();
-			pm.makePersistent(task);
-			pm.close();
+
 			return task;
 		}
 		throw new OAuthRequestException("invalid user");

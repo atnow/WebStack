@@ -1,41 +1,26 @@
 package com.atnow.model;
 
 import java.util.List;
-
-import javax.jdo.annotations.IdentityType;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
-
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Load;
 import com.google.appengine.api.users.User;
 
-@PersistenceCapable(identityType = IdentityType.APPLICATION)
+@Entity
 public class UserDetail {
 	
-	
-	@PrimaryKey
-	@Persistent
-	private String userId;
-	
-	@Persistent
+	@Id private String userId;
 	private String eduEmail;
-	
-	
-	@Persistent
 	private int numRatings;
-	
-	@Persistent
 	private float rating;
+//	private @Load List<Ref<Task>> tasksCompleted;
+//	private @Load List<Ref<Task>> tasksRequested;
 	
-	@Persistent
-	private List<Long> tasksCompleted;
-	
-	@Persistent
-	private List<Long> tasksRequested;
-	
-	
-	
-	public UserDetail(User user, String eduEmail, int numRatings, float rating, List<Long> tasksCompleted,
+	public UserDetail(){
+
+	}
+
+/*	public UserDetail(User user, String eduEmail, int numRatings, float rating, List<Long> tasksCompleted,
 			List<Long> tasksRequested) {
 		this.userId = user.getUserId();
 		this.eduEmail = eduEmail;
@@ -44,13 +29,24 @@ public class UserDetail {
 		this.tasksCompleted = tasksCompleted;
 		this.tasksRequested = tasksRequested;
 	}
-	
+*/
+	public UserDetail(User user, String eduEmail, int numRatings, float rating) {
+		this.userId = user.getUserId();
+		this.eduEmail = eduEmail;
+		this.numRatings = numRatings;
+		this.rating = rating;
+	}
+
 	public UserDetail(User user) {
 		this.userId = user.getUserId();
 	}
 
 	public String getUserId() {
 		return userId;
+	}
+
+	public void setUserId(User user) {
+		this.userId=user.getUserId();
 	}
 
 	public int getNumRatings() {
@@ -69,7 +65,7 @@ public class UserDetail {
 		this.rating = rating;
 	}
 	
-	public List<Long> getTasksCompleted() {
+	/*public List<Long> getTasksCompleted() {
 		return tasksCompleted;
 	}
 	
@@ -83,7 +79,7 @@ public class UserDetail {
 	
 	public void setTasksRequested(final List<Long> tasksRequested) {
 		this.tasksRequested = tasksRequested;
-	}
+	}*/
 	
 	public String getEduEmail() {
 		return eduEmail;

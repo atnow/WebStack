@@ -3,43 +3,27 @@ package com.atnow.model;
 import java.awt.Point;
 import java.util.Date;
 
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
+import com.googlecode.objectify.Ref;
+import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Load;
+import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Parent;
 
+@Entity
 public class Task {
 	
-	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private long taskId;
-	
-	@Persistent
+	@Id private Long taskId;
 	private String description;
-	
-	@Persistent
 	private String category;
-	
-	@Persistent
-	private String requesterId;
-	
-	@Persistent
-	private String completerId;
-	
-	@Persistent
 	private Date timeRequested;
-	
-	@Persistent
 	private String taskLocation;
-	
-	@Persistent
-	private Point requesterLocation;
-	
-	@Persistent
+	private Point requesterLocation;	
 	private Date expiration;
-	
-	@Persistent
 	private boolean completed;
-	
+	@Index private float price;
+	@Load Ref<UserDetail> requester;
+	//@Load Ref<UserDetail> completer;
 	
 	public enum TaskCategory {
 		FOOD("food"),
@@ -61,19 +45,20 @@ public class Task {
 		
 	}
 	
-	public Task(String description, TaskCategory category, int taskId, String requesterId, String completerId, Date timeRequested,
-			String taskLocation, Point requesterLocation, Date expiration, boolean completed) {
+	public Task(String description, TaskCategory category, Long taskId, UserDetail requester, UserDetail completer, Date timeRequested,
+			String taskLocation, Point requesterLocation, Date expiration, boolean completed, float price) {
 		super();
 		this.description = description;
 		this.category = category.getTaskCategory();
 		this.taskId = taskId;
-		this.requesterId = requesterId;
-		this.completerId = completerId;
 		this.timeRequested = timeRequested;
 		this.taskLocation = taskLocation;
 		this.requesterLocation = requesterLocation;
 		this.expiration = expiration;
 		this.completed = completed;
+		this.price = price;
+	//	this.setRequester(requester);
+	//	this.setCompleter(completer);
 	}
 
 	public String getDescription() {
@@ -92,26 +77,26 @@ public class Task {
 		this.category = category.getTaskCategory();
 	}
 
-	public long getTaskId() {
+	public Long getTaskId() {
 		return taskId;
 	}
 	
-	public String getRequesterId() {
-		return requesterId;
+	public void setRequester(UserDetail req){
+		requester = Ref.create(req);
 	}
 	
-	public void setRequesterId(final String requesterId) {
-		this.requesterId = requesterId;
+	public UserDetail getRequester(){
+		return requester.get();
 	}
 	
-	public String getCompleterId() {
-		return completerId;
+/*	public void setCompleter(UserDetail comp){
+		completer = Ref.create(comp);
 	}
 	
-	public void setCompleterId(final String completerId) {
-		this.completerId = completerId;
+	public UserDetail getCompleter(){
+		return completer.get();
 	}
-	
+*/	
 	public Date getTimeRequested() {
 		return timeRequested;
 	}
@@ -152,5 +137,12 @@ public class Task {
 		this.completed = completed;
 	}
 	
+	public float getPrice() {
+		return price;
+	}
+
+	public void setPrice(final float price) {
+		this.price = price;
+	}
 	//TODO: Create encoder and decoder for documents
 }
