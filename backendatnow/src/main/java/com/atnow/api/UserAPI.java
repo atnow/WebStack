@@ -46,4 +46,11 @@ public class UserAPI {
 	
 		return	OfyService.ofy().load().type(UserDetail.class).id(Id).now(); 	
 	}
+	
+	@ApiMethod(name = "users.listUsers")
+	public List<UserDetail> listUsers(){
+		List<UserDetail> users = OfyService.ofy().load().type(UserDetail.class).list();
+		return users;
+	}	
+
 }

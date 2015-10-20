@@ -26,28 +26,68 @@ import com.google.appengine.api.users.User;
 		)
 public class TaskAPI {
 
+	
+	/*public enum ListFilter {
+		PRICE("price"),
+		CATEGORY("category"),
+		EXPIRATION("expiration"),
+		LOCATION("location"),
+		REQUESTTIME("request");
+		
+		private final String filter;
+
+		ListFilter(final String filter) {
+			this.filter = filter;
+		}
+
+		public String getListFilter() {
+			return filter;
+		}
+
+		@Override
+		public String toString() {
+			return filter;
+		}
+
+	}*/
+	
+
+
 	private static final String DEFAULT_LIMIT = "100";
 	
-	@ApiMethod(name = "tasks.ping")
-	public Task ping() {
-		Task pong = new Task();
-		pong.setDescription("pong");
-		return pong;
-	}
-	
 	@ApiMethod(name = "tasks.list")
-	@SuppressWarnings("unchecked")
-	public List<Task> listTasks(@Nullable @Named("limit") String limit, 
-			@Nullable @Named("order") String order) throws OAuthRequestException, IOException {
-		return null;
-	}
+	public List<Task> listTasksByFilter(
+		@Nullable @Named("limit") String limit, 
+		@Nullable @Named("filter") String filter, 
+		@Nullable @Named("price") String price,
+		@Nullable @Named("category") String category
+	){
+		List<Task> tasks = null; 
+	
+		if(filter==null){	
+			tasks = OfyService.ofy().load().type(Task.class).list();
+			return tasks;
+		}
 
-	public List<Task> listTasksByPrice(@Nullable @Named("limit") String limit,
-			@Nullable @Named("order") String order, @Named("price")float price){
-		System.out.println("Price is "+price);
-		List<Task> tasks = OfyService.ofy().load().type(Task.class).filter("price >", price).list();
+		switch(filter){
+		case "price": 
+			System.out.println("Price\n\n\n\n");
+			tasks = OfyService.ofy().load().type(Task.class).filter("price >", Float.parseFloat(price)).list();
+			break;
+		case "category":
+			tasks = OfyService.ofy().load().type(Task.class).filter("category", category).list(); 
+			break;
+		case "expiration":
+			break;
+		case "location":
+			break;
+		default:
+			tasks = OfyService.ofy().load().type(Task.class).list();
+			break;
+	}
 		return tasks;
 	}
+	
 	
 	@ApiMethod(name = "tasks.insert")
 	public Task insert(Task task, User user) throws OAuthRequestException, IOException {

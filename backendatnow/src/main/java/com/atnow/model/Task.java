@@ -15,7 +15,7 @@ public class Task {
 	
 	@Id private Long taskId;
 	private String description;
-	private String category;
+	@Index  private String category;
 	private Date timeRequested;
 	private String taskLocation;
 	private Point requesterLocation;	
@@ -30,13 +30,18 @@ public class Task {
 		HOME("home"),
 		RIDE("ride");
 		
-		private String taskCategory;
+		private final String taskCategory;
 		
-		TaskCategory(String taskCategory) {
+		TaskCategory(final String taskCategory) {
 			this.taskCategory = taskCategory;
 		}
 
 		public String getTaskCategory() {
+			return taskCategory;
+		}
+
+		@Override
+		public String toString() {
 			return taskCategory;
 		}
 	}
@@ -45,11 +50,11 @@ public class Task {
 		
 	}
 	
-	public Task(String description, TaskCategory category, Long taskId, UserDetail requester, UserDetail completer, Date timeRequested,
+	public Task(String description, String category, Long taskId, UserDetail requester, UserDetail completer, Date timeRequested,
 			String taskLocation, Point requesterLocation, Date expiration, boolean completed, float price) {
 		super();
 		this.description = description;
-		this.category = category.getTaskCategory();
+		this.category = category;
 		this.taskId = taskId;
 		this.timeRequested = timeRequested;
 		this.taskLocation = taskLocation;
@@ -73,8 +78,8 @@ public class Task {
 		return category;
 	}
 
-	public void setCategory(TaskCategory category) {
-		this.category = category.getTaskCategory();
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public Long getTaskId() {
