@@ -1,53 +1,37 @@
+/** atnow global namespace*/
+var atnow = atnow || {};
 
-/**
- * @fileoverview
- * Provides methods for the Hello Endpoints sample UI and interaction with the
- * Hello Endpoints API.
- *
- * @author danielholevoet@google.com (Dan Holevoet)
- */
-
-/** google global namespace for Google projects. */
-var google = google || {};
-
-/** devrel namespace for Google Developer Relations projects. */
-google.devrel = google.devrel || {};
-
-/** samples namespace for DevRel sample code. */
-google.devrel.samples = google.devrel.samples || {};
-
-/** hello namespace for this sample. */
-google.devrel.samples.hello = google.devrel.samples.hello || {};
+atnow.index = atnow.index || {};
 
 /**
  * Client ID of the application (from the APIs Console).
  * @type {string}
  */
-google.devrel.samples.hello.CLIENT_ID =
+atnow.index.CLIENT_ID =
     '198305524363-uok2plt9l263jk87at0m5dcherk6f3pr.apps.googleusercontent.com';
 
 /**
  * Scopes used by the application.
  * @type {string}
  */
-google.devrel.samples.hello.SCOPES =
+atnow.index.SCOPES =
     'https://www.googleapis.com/auth/userinfo.email';
 
 /**
  * Whether or not the user is signed in.
  * @type {boolean}
  */
-google.devrel.samples.hello.signedIn = false;
+atnow.index.signedIn = false;
 
 /**
  * Loads the application UI after the user has completed auth.
  */
-google.devrel.samples.hello.userAuthed = function() {
+atnow.index.userAuthed = function() {
   var request = gapi.client.oauth2.userinfo.get().execute(function(resp) {
     if (!resp.code) {
-      google.devrel.samples.hello.signedIn = true;
+      atnow.index.signedIn = true;
       document.getElementById('signinButton').innerHTML = 'Sign out';
-      document.getElementById('authedGreeting').disabled = false;
+      /*document.getElementById('authedGreeting').disabled = false;*/
     }
   });
 };
@@ -57,21 +41,21 @@ google.devrel.samples.hello.userAuthed = function() {
  * @param {boolean} mode Whether or not to use immediate mode.
  * @param {Function} callback Callback to call on completion.
  */
-google.devrel.samples.hello.signin = function(mode, callback) {
-  gapi.auth.authorize({client_id: google.devrel.samples.hello.CLIENT_ID,
-      scope: google.devrel.samples.hello.SCOPES, immediate: mode},
+atnow.index.signin = function(mode, callback) {
+  gapi.auth.authorize({client_id: atnow.index.CLIENT_ID,
+      scope: atnow.index.SCOPES, immediate: mode},
       callback);
 };
 
 /**
  * Presents the user with the authorization popup.
  */
-google.devrel.samples.hello.auth = function() {
-  if (!google.devrel.samples.hello.signedIn) {
-    google.devrel.samples.hello.signin(false,
-        google.devrel.samples.hello.userAuthed);
+atnow.index.auth = function() {
+  if (!atnow.index.signedIn) {
+    atnow.index.signin(false,
+        atnow.index.userAuthed);
   } else {
-    google.devrel.samples.hello.signedIn = false;
+    atnow.index.signedIn = false;
     document.getElementById('signinButton').innerHTML = 'Sign in';
     document.getElementById('authedGreeting').disabled = true;
   }
@@ -81,7 +65,7 @@ google.devrel.samples.hello.auth = function() {
  * Prints a greeting to the greeting log.
  * param {Object} greeting Greeting to print.
  */
-google.devrel.samples.hello.print = function(greeting) {
+atnow.index.print = function(greeting) {
   var element = document.createElement('div');
   element.classList.add('row');
   element.innerHTML = greeting.message;
@@ -92,11 +76,11 @@ google.devrel.samples.hello.print = function(greeting) {
  * Gets a numbered greeting via the API.
  * @param {string} id ID of the greeting.
  */
-google.devrel.samples.hello.getGreeting = function(id) {
+atnow.index.getGreeting = function(id) {
   gapi.client.helloworld.greetings.getGreeting({'id': id}).execute(
       function(resp) {
         if (!resp.code) {
-          google.devrel.samples.hello.print(resp);
+          atnow.index.print(resp);
         } else {
           window.alert(resp.message);
         }
@@ -106,13 +90,13 @@ google.devrel.samples.hello.getGreeting = function(id) {
 /**
  * Lists greetings via the API.
  */
-google.devrel.samples.hello.listGreeting = function() {
+atnow.index.listGreeting = function() {
   gapi.client.helloworld.greetings.listGreeting().execute(
       function(resp) {
         if (!resp.code) {
           resp.items = resp.items || [];
           for (var i = 0; i < resp.items.length; i++) {
-            google.devrel.samples.hello.print(resp.items[i]);
+            atnow.index.print(resp.items[i]);
           }
         }
       });
@@ -123,14 +107,14 @@ google.devrel.samples.hello.listGreeting = function() {
  * @param {string} greeting Greeting to repeat.
  * @param {string} count Number of times to repeat it.
  */
-google.devrel.samples.hello.multiplyGreeting = function(
+atnow.index.multiplyGreeting = function(
     greeting, times) {
   gapi.client.helloworld.greetings.multiply({
       'message': greeting,
       'times': times
     }).execute(function(resp) {
       if (!resp.code) {
-        google.devrel.samples.hello.print(resp);
+        atnow.index.print(resp);
       }
     });
 };
@@ -138,38 +122,38 @@ google.devrel.samples.hello.multiplyGreeting = function(
 /**
  * Greets the current user via the API.
  */
-google.devrel.samples.hello.authedGreeting = function(id) {
+atnow.index.authedGreeting = function(id) {
   gapi.client.helloworld.greetings.authed().execute(
       function(resp) {
-        google.devrel.samples.hello.print(resp);
+        atnow.index.print(resp);
       });
 };
 
 /**
  * Enables the button callbacks in the UI.
  */
-google.devrel.samples.hello.enableButtons = function() {
-  document.getElementById('getGreeting').onclick = function() {
-    google.devrel.samples.hello.getGreeting(
+atnow.index.enableButtons = function() {
+/*  document.getElementById('getGreeting').onclick = function() {
+    atnow.index.getGreeting(
         document.getElementById('id').value);
   }
 
   document.getElementById('listGreeting').onclick = function() {
-    google.devrel.samples.hello.listGreeting();
+    atnow.index.listGreeting();
   }
 
   document.getElementById('multiplyGreetings').onclick = function() {
-    google.devrel.samples.hello.multiplyGreeting(
+    atnow.index.multiplyGreeting(
         document.getElementById('greeting').value,
         document.getElementById('count').value);
   }
 
   document.getElementById('authedGreeting').onclick = function() {
-    google.devrel.samples.hello.authedGreeting();
+    atnow.index.authedGreeting();
   }
-  
+*/  
   document.getElementById('signinButton').onclick = function() {
-    google.devrel.samples.hello.auth();
+    atnow.index.auth();
   }
 };
 
@@ -177,19 +161,19 @@ google.devrel.samples.hello.enableButtons = function() {
  * Initializes the application.
  * @param {string} apiRoot Root of the API's path.
  */
-google.devrel.samples.hello.init = function(apiRoot) {
+atnow.index.init = function(apiRoot) {
   // Loads the OAuth and helloworld APIs asynchronously, and triggers login
   // when they have completed.
   var apisToLoad;
   var callback = function() {
     if (--apisToLoad == 0) {
-      google.devrel.samples.hello.enableButtons();
-      google.devrel.samples.hello.signin(true,
-          google.devrel.samples.hello.userAuthed);
+      atnow.index.enableButtons();
+      atnow.index.signin(true,
+          atnow.index.userAuthed);
     }
   }
 
   apisToLoad = 2; // must match number of calls to gapi.client.load()
-  gapi.client.load('helloworld', 'v1', callback, apiRoot);
+  gapi.client.load('atnow', 'v1', callback, apiRoot);
   gapi.client.load('oauth2', 'v2', callback);
 };

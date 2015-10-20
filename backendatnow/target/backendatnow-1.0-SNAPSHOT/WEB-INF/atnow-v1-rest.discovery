@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/nFb6zRFQEwHQqcuLi4MS7XdoGSA\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/c9m1qDYYXLtlWF2ov3s_NhUrUYo\"",
  "discoveryVersion": "v1",
  "id": "atnow:v1",
  "name": "atnow",
@@ -98,9 +98,6 @@
     "completed": {
      "type": "boolean"
     },
-    "completerId": {
-     "type": "string"
-    },
     "description": {
      "type": "string"
     },
@@ -108,8 +105,12 @@
      "type": "string",
      "format": "date-time"
     },
-    "requesterId": {
-     "type": "string"
+    "price": {
+     "type": "number",
+     "format": "float"
+    },
+    "requester": {
+     "$ref": "UserDetail"
     },
     "requesterLocation": {
      "$ref": "Point"
@@ -138,9 +139,63 @@
      }
     }
    }
+  },
+  "UserDetail": {
+   "id": "UserDetail",
+   "type": "object",
+   "properties": {
+    "eduEmail": {
+     "type": "string"
+    },
+    "numRatings": {
+     "type": "integer",
+     "format": "int32"
+    },
+    "rating": {
+     "type": "number",
+     "format": "float"
+    },
+    "userId": {
+     "type": "string"
+    }
+   }
   }
  },
  "resources": {
+  "taskAPI": {
+   "methods": {
+    "listTasksByPrice": {
+     "id": "atnow.taskAPI.listTasksByPrice",
+     "path": "task/{price}",
+     "httpMethod": "GET",
+     "parameters": {
+      "limit": {
+       "type": "string",
+       "location": "query"
+      },
+      "order": {
+       "type": "string",
+       "location": "query"
+      },
+      "price": {
+       "type": "number",
+       "required": true,
+       "format": "float",
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "price"
+     ],
+     "response": {
+      "$ref": "TaskCollection"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email"
+     ]
+    }
+   }
+  },
   "tasks": {
    "methods": {
     "insert": {
@@ -185,6 +240,46 @@
      "httpMethod": "POST",
      "response": {
       "$ref": "Task"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email"
+     ]
+    }
+   }
+  },
+  "users": {
+   "methods": {
+    "getUserById": {
+     "id": "atnow.users.getUserById",
+     "path": "userdetail/{Id}",
+     "httpMethod": "GET",
+     "parameters": {
+      "Id": {
+       "type": "string",
+       "required": true,
+       "location": "path"
+      }
+     },
+     "parameterOrder": [
+      "Id"
+     ],
+     "response": {
+      "$ref": "UserDetail"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email"
+     ]
+    },
+    "insert": {
+     "id": "atnow.users.insert",
+     "path": "userdetail",
+     "httpMethod": "POST",
+     "request": {
+      "$ref": "UserDetail",
+      "parameterName": "resource"
+     },
+     "response": {
+      "$ref": "UserDetail"
      },
      "scopes": [
       "https://www.googleapis.com/auth/userinfo.email"
