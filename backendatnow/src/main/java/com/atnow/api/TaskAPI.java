@@ -68,7 +68,6 @@ public class TaskAPI {
 			tasks = OfyService.ofy().load().type(Task.class).list();
 			return tasks;
 		}
-
 		switch(filter){
 		case "price": 
 			System.out.println("Price\n\n\n\n");

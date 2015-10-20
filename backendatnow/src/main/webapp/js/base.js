@@ -103,6 +103,40 @@ atnow.index.listGreeting = function() {
 };
 
 /**
+ * Lists greetings via the API.
+ */
+atnow.index.listTasks = function() {
+  gapi.client.atnow.tasks.list().execute(
+      function(resp) {
+        if (!resp.code) {
+          resp.items = resp.items || [];
+          for (var i = 0; i < resp.items.length; i++) {
+            atnow.index.printTask(resp.items[i]);
+          }
+        }
+      });
+};
+
+/**
+ * Prints a greeting to the greeting log.
+ * param {Object} greeting Greeting to print.
+ */
+atnow.index.printTask = function(task) {
+  var table = document.getElementById('taskTable');
+  var row = table.insertRow(table.length);
+  var name = row.insertCell(0);
+  name.innerHTML = task.description;
+  var price = row.insertCell(1);
+  price.innerHTML = task.price;
+  var link = row.insertCell(2);
+  link.innerHTML = "<a ref='#'>none</a>";
+  var category = row.insertCell(3);
+  category.innerHTML = task.category;
+  var expiration = row.insertCell(4);
+  expiration.innnerHTML = task.expiration;
+};
+
+/**
  * Gets a greeting a specified number of times.
  * @param {string} greeting Greeting to repeat.
  * @param {string} count Number of times to repeat it.
@@ -152,6 +186,11 @@ atnow.index.enableButtons = function() {
     atnow.index.authedGreeting();
   }
 */  
+
+//  document.getElementById('listTasks').onclick = function() {
+//    atnow.index.listTasks();
+//  }
+
   document.getElementById('signinButton').onclick = function() {
     atnow.index.auth();
   }
@@ -168,6 +207,7 @@ atnow.index.init = function(apiRoot) {
   var callback = function() {
     if (--apisToLoad == 0) {
       atnow.index.enableButtons();
+      atnow.index.listTasks();
       atnow.index.signin(true,
           atnow.index.userAuthed);
     }
