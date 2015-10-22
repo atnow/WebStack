@@ -92,7 +92,8 @@ public class TaskAPI {
 	public Task insert(Task task, User user) throws OAuthRequestException, IOException {
 		if (user != null) {
 			task.setRequester(OfyService.ofy().load().type(UserDetail.class).id(user.getUserId()).now());	
-			task.setTimeRequested(new Date());
+			Date date = new Date();
+			task.setTimeRequested(date.getTime());
 			task.setCompleted(false);
 			OfyService.ofy().save().entity(task).now();
 			//TODO: set user location in task

@@ -14,12 +14,13 @@ import com.googlecode.objectify.annotation.Parent;
 public class Task {
 	
 	@Id private Long taskId;
+	private String title;
 	private String description;
 	@Index  private String category;
-	private Date timeRequested;
+	private Long timeRequested;
+	private Long expiration;
 	private String taskLocation;
 	private Point requesterLocation;	
-	private Date expiration;
 	private boolean completed;
 	@Index private float price;
 	@Load Ref<UserDetail> requester;
@@ -50,8 +51,8 @@ public class Task {
 		
 	}
 	
-	public Task(String description, String category, Long taskId, UserDetail requester, UserDetail completer, Date timeRequested,
-			String taskLocation, Point requesterLocation, Date expiration, boolean completed, float price) {
+	public Task(String description, String title, String category, Long taskId, UserDetail requester, UserDetail completer, Long timeRequested,
+			String taskLocation, Point requesterLocation, Long expiration, boolean completed, float price) {
 		super();
 		this.description = description;
 		this.category = category;
@@ -62,8 +63,15 @@ public class Task {
 		this.expiration = expiration;
 		this.completed = completed;
 		this.price = price;
-	//	this.setRequester(requester);
-	//	this.setCompleter(completer);
+		this.title = title;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+	
+	public void setTitle(final String title) {
+		this.title = title;
 	}
 
 	public String getDescription() {
@@ -102,11 +110,11 @@ public class Task {
 		return completer.get();
 	}
 */	
-	public Date getTimeRequested() {
+	public Long getTimeRequested() {
 		return timeRequested;
 	}
 	
-	public void setTimeRequested(final Date timeRequested) {
+	public void setTimeRequested(final Long timeRequested) {
 		this.timeRequested = timeRequested;
 	}
 	
@@ -126,11 +134,11 @@ public class Task {
 		this.requesterLocation = requesterLocation;
 	}
 	
-	public Date getExpiration() {
+	public Long getExpiration() {
 		return expiration;
 	}
 	
-	public void setExpiration(final Date expiration) {
+	public void setExpiration(final Long expiration) {
 		this.expiration = expiration;
 	}
 	
