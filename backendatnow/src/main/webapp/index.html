@@ -2,11 +2,14 @@
 <html>
 <head>
     <title>@Now</title>
-    <script type="text/javascript" src="/js/base.js"></script>
     <link type="text/css" rel="stylesheet" href="/bootstrap/css/bootstrap.css">
     <link type="text/css" rel="stylesheet" href="/bootstrap/css/bootstrap-responsive.css">
     <link type="text/css" rel="stylesheet" href="/css/style.css">
+    <script src="/js/angular.js"></script>
     <script src="/js/jquery-2.1.4.min.js"></script> 
+    <script type="text/javascript" src="/js/base.js"></script>
+    <script type="text/javascript" src="/js/controllers.js"></script>
+    <script type="text/javascript" src="/js/stTable.js"></script>
     <script>$(function(){
       $("#header").load("/html/components/navbar.html"); 
     });</script>
@@ -14,37 +17,43 @@
 <body>
 <div id="header"></div>
 
-
-<div class="container">
+<div class="container" ng-controller="TaskListCtrl">
   <div class="jumbotron">
     <h1>@Now</h1>
     <p>a task marketplace for college students</p>
   </div>
   <div class="row">
-    <table id="taskTable" class="table">
-        <thead>
-          <tr>
-            <th>Task</th>
-            <th>Price</th>
-            <th>Link</th>
-            <th>Category</th>
-            <th>Expiration</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
+    <table id="taskTable" class="table table-striped" st-table="tasks">
+      <thead>
+        <tr>
+          <th>Task</th>
+          <th>Price</th>
+          <th>Link</th>
+          <th>Category</th>
+          <th>Expiration</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="task in tasks">
+        <td>{{task.title}}</td>
+        <td>{{task.price}}</td>
+        <td>undefined</td>
+        <td>{{task.category}}</td>
+        <td>{{task.expiration}}</td>
+      </tr>
+      </tbody>
     </table>
   </div>
-  
 
-    <a href="/form.html" class="btn btn-default" role="button">New Task</a>
+  <a href="/form.html" class="btn btn-default" role="button">New Task</a>
     
-    <script type="text/javascript">
-        function init() {
-            atnow.index.init('//' + window.location.host + '/_ah/api');
-        }
-    </script>
-    <script src="https://apis.google.com/js/client.js?onload=init"></script>
+  <script type="text/javascript">
+      function init() {
+          atnow.index.init('//' + window.location.host + '/_ah/api');
+      }
+  </script>
+  <script src="https://apis.google.com/js/client.js?onload=init"></script>
+
 </div>
 </body>
 </html>
