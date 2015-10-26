@@ -1,3 +1,5 @@
+'use strict';
+
 /** atnow global namespace*/
 var atnow = atnow || {};
 
@@ -61,97 +63,40 @@ atnow.index.auth = function() {
   }
 };
 
-/**
- * Prints a greeting to the greeting log.
- * param {Object} greeting Greeting to print.
- */
-atnow.index.print = function(greeting) {
-  var element = document.createElement('div');
-  element.classList.add('row');
-  element.innerHTML = greeting.message;
-  document.getElementById('outputLog').appendChild(element);
-};
-
-/**
- * Gets a numbered greeting via the API.
- * @param {string} id ID of the greeting.
- */
-atnow.index.getGreeting = function(id) {
-  gapi.client.helloworld.greetings.getGreeting({'id': id}).execute(
-      function(resp) {
-        if (!resp.code) {
-          atnow.index.print(resp);
-        } else {
-          window.alert(resp.message);
-        }
-      });
-};
 
 /**
  * Lists greetings via the API.
  */
-atnow.index.listGreeting = function() {
-  gapi.client.helloworld.greetings.listGreeting().execute(
-      function(resp) {
-        if (!resp.code) {
-          resp.items = resp.items || [];
-          for (var i = 0; i < resp.items.length; i++) {
-            atnow.index.print(resp.items[i]);
-          }
-        }
-      });
-};
-
-/**
- * Lists greetings via the API.
- */
-atnow.index.listTasks = function() {
-  gapi.client.atnow.tasks.list().execute(
-      function(resp) {
-        if (!resp.code) {
-          resp.items = resp.items || [];
-          for (var i = 0; i < resp.items.length; i++) {
-            atnow.index.printTask(resp.items[i]);
-          }
-        }
-      });
-};
+// atnow.index.listTasks = function() {
+//   gapi.client.atnow.tasks.list().execute(
+//       function(resp) {
+//         if (!resp.code) {
+//           resp.items = resp.items || [];
+//           for (var i = 0; i < resp.items.length; i++) {
+//             atnow.index.printTask(resp.items[i]);
+//           }
+//         }
+//       });
+// };
 
 /**
  * Prints a greeting to the greeting log.
  * param {Object} greeting Greeting to print.
  */
-atnow.index.printTask = function(task) {
-  var table = document.getElementById('taskTable');
-  var row = table.insertRow(table.length);
-  var name = row.insertCell(0);
-  name.innerHTML = task.description;
-  var price = row.insertCell(1);
-  price.innerHTML = task.price;
-  var link = row.insertCell(2);
-  link.innerHTML = "<a ref='#'>none</a>";
-  var category = row.insertCell(3);
-  category.innerHTML = task.category;
-  var expiration = row.insertCell(4);
-  expiration.innnerHTML = task.expiration;
-};
-
-/**
- * Gets a greeting a specified number of times.
- * @param {string} greeting Greeting to repeat.
- * @param {string} count Number of times to repeat it.
- */
-atnow.index.multiplyGreeting = function(
-    greeting, times) {
-  gapi.client.helloworld.greetings.multiply({
-      'message': greeting,
-      'times': times
-    }).execute(function(resp) {
-      if (!resp.code) {
-        atnow.index.print(resp);
-      }
-    });
-};
+// atnow.index.printTask = function(task) {
+//   var table = document.getElementById('taskTable');
+//   var row = table.insertRow(table.length);
+//   var name = row.insertCell(0);
+//   name.innerHTML = task.description;
+//   var price = row.insertCell(1);
+//   price.innerHTML = task.price;
+//   var link = row.insertCell(2);
+//   link.innerHTML = "<a ref='#'>none</a>";
+//   var category = row.insertCell(3);
+//   category.innerHTML = task.category;
+//   var expiration = row.insertCell(4);
+//   expiration.innnerHTML = task.expiration;
+// };
 
 /**
  * Greets the current user via the API.
@@ -167,30 +112,6 @@ atnow.index.authedGreeting = function(id) {
  * Enables the button callbacks in the UI.
  */
 atnow.index.enableButtons = function() {
-/*  document.getElementById('getGreeting').onclick = function() {
-    atnow.index.getGreeting(
-        document.getElementById('id').value);
-  }
-
-  document.getElementById('listGreeting').onclick = function() {
-    atnow.index.listGreeting();
-  }
-
-  document.getElementById('multiplyGreetings').onclick = function() {
-    atnow.index.multiplyGreeting(
-        document.getElementById('greeting').value,
-        document.getElementById('count').value);
-  }
-
-  document.getElementById('authedGreeting').onclick = function() {
-    atnow.index.authedGreeting();
-  }
-*/  
-
-//  document.getElementById('listTasks').onclick = function() {
-//    atnow.index.listTasks();
-//  }
-
   document.getElementById('signinButton').onclick = function() {
     atnow.index.auth();
   }
@@ -207,9 +128,10 @@ atnow.index.init = function(apiRoot) {
   var callback = function() {
     if (--apisToLoad == 0) {
       atnow.index.enableButtons();
-      atnow.index.listTasks();
       atnow.index.signin(true,
           atnow.index.userAuthed);
+      var $injector = angular.bootstrap(document, ['atnowApp']);
+      console.log('Angular loaded');
     }
   }
 
