@@ -36,11 +36,11 @@
 		    </thead>
 		    <tbody>
 		    <tr ng-repeat="task in tasks">
-		    	<td>{{task.title}}</td>
-		    	<td>{{task.price}}</td>
+		    	<td ng-bind="task.title"></td>
+		    	<td ng-bind="task.price"></td>
 		    	<td>undefined</td>
-		    	<td>{{task.category}}</td>
-		    	<td>{{task.expiration}}</td>
+		    	<td ng-bind="task.category"></td>
+		    	<td ng-bind="task.expiration"></td>
 		    </tr>
 		    </tbody>
 		</table>
