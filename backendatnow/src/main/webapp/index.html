@@ -8,15 +8,14 @@
     <script src="/js/angular.js"></script>
     <script src="/js/jquery-2.1.4.min.js"></script> 
     <script type="text/javascript" src="/js/base.js"></script>
-    <script type="text/javascript" src="/js/controllers.js"></script>
-    <script type="text/javascript" src="/js/smart-table.js"></script>
+    <script type="text/javascript" src="/js/task/TaskFeed.js"></script>
+    <script type="text/javascript" src="/js/task/smart-table.js"></script>
     <script>$(function(){
       $("#header").load("/html/components/navbar.html"); 
     });</script>
 </head>
 <body>
 <div id="header"></div>
-
 
 <div class="container" ng-controller="TaskListCtrl">
 	<div class="jumbotron">
@@ -46,14 +45,14 @@
 		</table>
 	</div>
 
-	<a href="/form.html" class="btn btn-default" role="button">New Task</a>
+  <a href="/form.html" class="btn btn-default" role="button">New Task</a>
     
-    <script type="text/javascript">
-        function init() {
-            atnow.index.init('//' + window.location.host + '/_ah/api');
-        }
-    </script>
-    <script src="https://apis.google.com/js/client.js?onload=init"></script>
+  <script type="text/javascript">
+      function init() {
+          atnow.index.init('//' + window.location.host + '/_ah/api');
+      }
+  </script>
+  <script src="https://apis.google.com/js/client.js?onload=init"></script>
 
 </div>
 </body>

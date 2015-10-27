@@ -8,15 +8,15 @@ import com.atnow.model.UserDetail;
 
 public class OfyService
 {
-	static {
-		factory().register(Task.class);
-		factory().register(UserDetail.class);
-	}
-	public static Objectify ofy(){
-		return ObjectifyService.ofy();
-	}
+    static {
+        factory().register(Task.class);
+        factory().register(UserDetail.class);
+    }
+    public static Objectify ofy(){
+        return ObjectifyService.ofy();
+    }
 
-	public static ObjectifyFactory factory() {
-		return ObjectifyService.factory();
-	}
+    public static ObjectifyFactory factory() {
+        return ObjectifyService.factory();
+    }
 }
