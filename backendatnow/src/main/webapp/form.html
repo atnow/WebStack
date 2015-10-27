@@ -5,8 +5,9 @@
   <link type="text/css" rel="stylesheet" href="/bootstrap/css/bootstrap-responsive.css">
   <link type="text/css" rel="stylesheet" href="/css/style.css">
   <script src="/js/angular.js"></script>
-  <script src="/js/jquery-2.1.4.min.js"></script>
-  <script type="text/javascript" src="/js/newTask.js"></script>
+  <script src="/js/jquery-2.1.4.min.js"></script> 
+  <script type="text/javascript" src="/js/base.js"></script>
+  <script type="text/javascript" src="/js/task/NewTask.js"></script>
   <script>$(function(){
       $("#header").load("/html/components/navbar.html"); 
     });</script>
@@ -18,7 +19,7 @@
         <h1>Create a new task</h1>
     
         <form action="javascript:void(0);">
-            Title:<div><input id="title" type="text" placeholder="Title" class="form-control"/></div>
+            Title:<div><input type="text" name="form.title" placeholder="Title" class="form-control"/></div>
             Description:<div><input id="description" type="text" placeholder="Description" class="form-control"/></div>
             Price:<div><input type="number" id="price" min="0" class="form-control"/></div>
             Expiration:<div><input id="expiration" class="form-control" type="datetime-local"></div>
