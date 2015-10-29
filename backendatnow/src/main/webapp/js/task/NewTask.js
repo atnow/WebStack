@@ -9,7 +9,9 @@ atnowApp.controller('TaskFormCtrl', function ($scope, $http) {
   newTask.expiration;
   
   newTask.commit = function() {
-    
+    gapi.client.atnow.tasks.insert({title: newTask.title, 
+      description: newTask.description, 
+      price: newTask.price}).execute();
   }
   
 });
