@@ -1,11 +1,15 @@
 'use strict';
 
-
-var atnowApp = angular.module('atnowApp', []);
-
 atnowApp.controller('TaskFormCtrl', function ($scope, $http) {
   
-  $scope.data = {
-      
+  var newTask;
+  newTask.title = '';
+  newTask.description = '';
+  newTask.price;
+  newTask.expiration;
+  
+  newTask.commit = function() {
+    
   }
+  
 });
