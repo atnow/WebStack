@@ -1,0 +1,29 @@
+<div class="container">
+	<div class="jumbotron">
+		<h1>@Now</h1>
+		<p>a task marketplace for college students</p>
+	</div>	
+	<div class="row">
+		<table id="taskTable" class="table table-striped" st-table="tasks">
+		    <thead>
+		      <tr>
+		        <th>Task</th>
+		        <th>Price</th>
+		        <th>Link</th>
+		        <th>Category</th>
+		        <th>Expiration</th>
+		      </tr>
+		    </thead>
+		    <tbody>
+		    <tr ng-repeat="task in tasks">
+		    	<td ng-bind="task.title"></td>
+		    	<td ng-bind="task.price"></td>
+		    	<td>undefined</td>
+		    	<td ng-bind="task.category"></td>
+		    	<td ng-bind="task.expiration"></td>
+		    </tr>
+		    </tbody>
+		</table>
+	</div>
+</div>
+
