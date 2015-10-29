@@ -4,13 +4,12 @@
 
   .controller("TaskFeedController", function($scope) {
 
- console.log("suck it");
-
 
   gapi.client.atnow.tasks.list().execute(
       function(resp){
        $scope.$apply( function(){
        $scope.tasks=resp.items || [];
+       $scope.tasks=[{price:5, title: "Get me hop", category: "food"}, {price: 10, title: "Quiz me on Latin", category:"homework"}];
       });
     });
 
