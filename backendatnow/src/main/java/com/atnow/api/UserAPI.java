@@ -42,9 +42,15 @@ public class UserAPI {
     }
     
     @ApiMethod(name = "users.getUserById")
-    public UserDetail getUserById(@Named("Id") String Id, User user){
+    public UserDetail getUserById(@Named("Id") String id, User user){
     
-        return    OfyService.ofy().load().type(UserDetail.class).id(Id).now();     
+        return    OfyService.ofy().load().type(UserDetail.class).id(id).now();     
+    }
+    
+    @ApiMethod(name = "users.checkDetail")
+    public UserDetail checkDetail(User user){
+    
+        return OfyService.ofy().load().type(UserDetail.class).id(user.getUserId()).now();     
     }
     
     @ApiMethod(name = "users.listUsers")

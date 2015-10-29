@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<div class="navbar navbar-inverse navbar-fixed-top">
+<div class="navbar navbar-inverse navbar-fixed-top" data-ng-controller="NavBarController">
     <div class="navbar-inner">
         <div class="container">
             <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -18,7 +18,7 @@
             </button>
             <a class="brand" href="#">@Now</a>
             <div class="nav-collapse collapse pull-right">
-                <a href="javascript:void(0);" class="btn" id="signinButton">Sign in</a>
+                <span id="signinButton" class="btn" data-ng-click="signIn()">Sign in</span>
             </div>
         </div>
     </div>

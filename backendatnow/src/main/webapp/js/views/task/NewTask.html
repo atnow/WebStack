@@ -1,0 +1,11 @@
+<div class ="container">
+  <h1>Create a new task</h1>
+
+  <form>
+      Title:<div><input type="text" placeholder="Title" class="form-control" data-ng-model="newTask.title"/></div>
+      Description:<div><input class="form-control" type="text" placeholder="Description" data-ng-model="newTask.description"/></div>
+      Price:<div><input type="number" min="0" class="form-control" data-ng-model="newTask.price"/></div>
+      Expiration:<div><input class="form-control" type="datetime-local" data-ng-model="newTask.expiration"></div>
+  <div><a href="/"><input id="newTask" type="submit" class="btn btn-primary" data-ng-click="newTask.commit()"></a></div>
+  </form>
+</div>

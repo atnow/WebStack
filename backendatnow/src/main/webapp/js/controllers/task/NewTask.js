@@ -2,7 +2,7 @@
 
 atnowApp.controller('TaskFormCtrl', function ($scope, $http) {
   
-  var newTask;
+  var newTask = {};
   newTask.title = '';
   newTask.description = '';
   newTask.price;
