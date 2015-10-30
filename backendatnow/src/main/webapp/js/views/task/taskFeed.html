@@ -17,7 +17,7 @@
 		    <tbody>
 		    <tr ng-repeat="task in tasks">
 		    	<td ng-bind="task.title"></td>
-		    	<td ng-bind="task.price"></td>
+		    	<td ng-bind="task.price"></dt>
 		    	<td>undefined</td>
 		    	<td ng-bind="task.category"></td>
 		    	<td ng-bind="task.expiration"></td>
@@ -25,5 +25,6 @@
 		    </tbody>
 		</table>
 	</div>
+	<div><input id="newTask" type="New Task" class="btn btn-primary" data-ng-click="newTask()" value="New Task"></div>
 </div>
 

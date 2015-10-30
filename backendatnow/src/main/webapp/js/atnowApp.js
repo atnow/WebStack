@@ -2,52 +2,62 @@
 
   var atnowApp = angular.module('atnowApp', ['ngRoute', 'smart-table', 'ngAnimate', 'ui.bootstrap'])
 
-  .controller("TaskFeedController", function($scope) {
+  .controller("TaskFeedController", function($scope, $location) {
 
 
   gapi.client.atnow.tasks.list().execute(
       function(resp){
        $scope.$apply( function(){
        $scope.tasks=resp.items || [];
-       $scope.tasks=[{price:5, title: "Get me hop", category: "food"}, {price: 10, title: "Quiz me on Latin", category:"homework"}];
       });
     });
 
+  $scope.newTask = function() {
+    console.log("in new task");
+    console.log($location.path());
+    $location.path("/newTask");
+    console.log($location.path());
+  }
 })
 
-.controller('TaskFormController', function ($scope, $http) {
+.controller('TaskFormController', function ($scope, $http, $location) {
   
   $scope.newTask = {};
-  newTask.title = '';
-  newTask.description = '';
-  newTask.price;
-  newTask.expiration;
+  $scope.newTask.title = '';
+  $scope.newTask.description = '';
+  $scope.newTask.price;
+  $scope.newTask.expiration;
   
-  newTask.commit = function() {
+  $scope.commitTask = function() {
     console.log("committing new task");
-    gapi.client.atnow.tasks.insert({title: newTask.title, 
-      description: newTask.description, 
-      price: newTask.price}).execute();
+    gapi.client.atnow.tasks.insert({title: $scope.newTask.title, 
+      description: $scope.newTask.description, 
+      price: $scope.newTask.price}).execute(function(resp) {
+        console.log("insert");
+      });
+    $location.path("/");
+
   }
   
 })
 
-.controller('UserFormController', function ($scope, $http) {
+.controller('UserFormController', function ($scope, $http, $location) {
   $scope.newUser = {};
   $scope.newUser.eduEmail = '';
   
-  $scope.commit = function() {
+  $scope.commitUser = function() {
     console.log('committing');
     gapi.client.atnow.users.insert({eduEmail: $scope.newUser.eduEmail}).execute(function(resp) {
       console.log(resp);
     });
     
-    window.location = "/";
+    $location.path("/");
   }
   
 })
 
 .controller('NavBarController', function($scope, $http, $location) {
+  
   var userAuthed = function() {
     var request = gapi.client.oauth2.userinfo.get().execute(function(resp) {
       if (!resp.code) {
@@ -56,7 +66,8 @@
               if (Object.keys(resp).length <= 1) {
                 console.log("no user detail in database redirecting to user detail page");
                 console.log(resp);
-                window.location = "#/newUser";
+                $location.path("/newUser");
+                $scope.$apply();
               } else {
                 console.log("user detail in database");
                 console.log(resp);
