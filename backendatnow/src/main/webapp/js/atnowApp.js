@@ -50,7 +50,6 @@
     gapi.client.atnow.users.insert({eduEmail: $scope.newUser.eduEmail}).execute(function(resp) {
       console.log(resp);
     });
-    
     $location.path("/");
   }
   
