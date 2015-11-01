@@ -2,23 +2,21 @@
 
   var atnowApp = angular.module('atnowApp', ['ngRoute', 'smart-table', 'ngAnimate', 'ui.bootstrap'])
 
-  .controller("TaskFeedController", function($scope, $location) {
+  .controller("TaskFeedController", ['$scope', function($scope, $location) {
 
 
   gapi.client.atnow.tasks.list().execute(
       function(resp){
        $scope.$apply( function(){
-       $scope.tasks=resp.items || [];
+       $scope.safeTasks=resp.items || [];
       });
     });
-
+  $scope.displayedTasks=[].concat($scope.safeTasks);
+  $scope.itemsByPage=15;
   $scope.newTask = function() {
-    console.log("in new task");
-    console.log($location.path());
     $location.path("/newTask");
-    console.log($location.path());
   }
-})
+}])
 
 .controller('TaskFormController', function ($scope, $http, $location) {
   
