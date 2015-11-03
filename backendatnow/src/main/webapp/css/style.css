@@ -34,3 +34,15 @@ form {
 	width:50%;
 	margin: 0 auto;
 }
+
+.table-header span{
+    cursor: pointer;
+}
+
+.st-sort-ascent:after{
+    content: '\25B2';
+}
+
+.st-sort-descent:after{
+    content: '\25BC'; 
+}
