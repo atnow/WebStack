@@ -9,3 +9,4 @@ TODOS:
 
 - Modal for task page instead of whole new page?
 - Navbar buttons
+- switch to ControllerAs syntax 

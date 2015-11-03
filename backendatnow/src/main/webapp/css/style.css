@@ -35,7 +35,7 @@ form {
 	margin: 0 auto;
 }
 
-.table-header{
+.table-header span{
     cursor: pointer;
 }
 

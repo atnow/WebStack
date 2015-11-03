@@ -7,10 +7,10 @@
 		<table id="task-table" class="table table-striped" st-table="displayedTasks" st-safe-src="safeTasks">
 		    <thead>
 		      <tr>
-		        <th st-sort="title" class="table-header">Task</th>
-		        <th st-sort="price" class="table-header">Price</th>
-		        <th st-sort="category" class="table-header">Category</th>
-		        <th st-sort="expiration" class="table-header">Expiration</th>
+		        <th st-sort="title" class="table-header"><span>Task</span></th>
+		        <th st-sort="price" class="table-header"><span>Price</span></th>
+		        <th st-sort="category" class="table-header"><span>Category</span></th>
+		        <th st-sort="expiration" class="table-header"><span>Expiration</span></th>
 		        <th>Link</th>
 		      </tr>
 		    </thead>
@@ -19,8 +19,8 @@
 		    		<td ng-bind="task.title"></td>
 		    		<td ng-bind="task.price"></td>
 		    		<td ng-bind="task.category"></td>
-		    		<td ng-bind="task.expiration"></td>
-          			<td><a data-ng-href="#/task/{{task.taskId}}"><span data-ng-bind="task.taskId"></span></a></td>
+		    		<td ng-bind="(task.expiration | date: 'MM/dd/yyyy h:mma')"></td>
+          			<td><a data-ng-href="#/task/{{task.taskId}}"><i class="glyphicon glyphicon-info-sign"></a></td>
 		    	</tr>
 		    </tbody>
 		    <tfoot>

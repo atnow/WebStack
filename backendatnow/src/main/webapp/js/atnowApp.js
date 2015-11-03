@@ -29,27 +29,30 @@
   $scope.status ={
     opened: false
   };
+
   $scope.mytime = new Date();
   $scope.hstep = 1;
-  $scope.mstep = 15;
+  $scope.mstep = 1;
   $scope.ismeridian = true;
 
-  
+  $scope.mydate = new Date();
 
   $scope.open = function(){
     $scope.status.opened = true;
   };
   
   $scope.commitTask = function() {
-    console.log("committing new task");
+    //combine date and time
+    $scope.mydate.setHours($scope.mytime.getHours());
+    $scope.mydate.setMinutes($scope.mytime.getMinutes());
+    $scope.mydate.setMilliseconds($scope.mytime.getMilliseconds());
+
     gapi.client.atnow.tasks.insert({title: $scope.newTask.title, 
       description: $scope.newTask.description, 
-      price: $scope.newTask.price}).execute(function(resp) {
+      price: $scope.newTask.price, expiration: $scope.mydate.getTime()}).execute(function(resp) {
         console.log("insert");
       });
     $location.path("/");
-
-
   }
   
 })
