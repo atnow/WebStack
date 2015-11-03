@@ -25,8 +25,10 @@
 + (NSArray *)checkClasses {
   NSArray *classes = @[
     [GTLQueryAtnow class],
-    [GTLAtnowUserDetail class],
-    [GTLAtnowUserDetailCollection class]
+    [GTLAtnowPoint class],
+    [GTLAtnowTask class],
+    [GTLAtnowTaskCollection class],
+    [GTLAtnowUserDetail class]
   ];
   return classes;
 }

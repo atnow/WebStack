@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryAtnow (3 custom class methods, 2 custom properties)
+//   GTLQueryAtnow (2 custom class methods, 5 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLQuery.h"
@@ -21,7 +21,7 @@
   #import "GTLQuery.h"
 #endif
 
-@class GTLAtnowUserDetail;
+@class GTLAtnowTask;
 
 @interface GTLQueryAtnow : GTLQuery
 
@@ -35,27 +35,29 @@
 //
 // Method-specific parameters; see the comments below for more information.
 //
-@property (nonatomic, copy) NSString *Id;
+@property (nonatomic, copy) NSString *category;
+@property (nonatomic, copy) NSString *filter;
+@property (nonatomic, copy) NSString *limit;
+@property (nonatomic, copy) NSString *price;
 
-#pragma mark - "users" methods
+#pragma mark - "tasks" methods
 // These create a GTLQueryAtnow object.
 
-// Method: atnow.users.getUserById
+// Method: atnow.tasks.insert
 //  Authorization scope(s):
 //   kGTLAuthScopeAtnowUserinfoEmail
-// Fetches a GTLAtnowUserDetail.
-+ (instancetype)queryForUsersGetUserByIdWithId:(NSString *)Id;
+// Fetches a GTLAtnowTask.
++ (instancetype)queryForTasksInsertWithObject:(GTLAtnowTask *)object;
 
-// Method: atnow.users.insert
+// Method: atnow.tasks.list
+//  Optional:
+//   category: NSString
+//   filter: NSString
+//   limit: NSString
+//   price: NSString
 //  Authorization scope(s):
 //   kGTLAuthScopeAtnowUserinfoEmail
-// Fetches a GTLAtnowUserDetail.
-+ (instancetype)queryForUsersInsertWithObject:(GTLAtnowUserDetail *)object;
-
-// Method: atnow.users.listUsers
-//  Authorization scope(s):
-//   kGTLAuthScopeAtnowUserinfoEmail
-// Fetches a GTLAtnowUserDetailCollection.
-+ (instancetype)queryForUsersListUsers;
+// Fetches a GTLAtnowTaskCollection.
++ (instancetype)queryForTasksList;
 
 @end

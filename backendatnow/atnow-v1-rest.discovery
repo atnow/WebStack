@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/tqHQFgI2gdRGkTd_FETVI4FSfKY\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/IWzdhvD90xBQNgz_eCR0xGEGMB8\"",
  "discoveryVersion": "v1",
  "id": "atnow:v1",
  "name": "atnow",
@@ -71,6 +71,78 @@
   }
  },
  "schemas": {
+  "Point": {
+   "id": "Point",
+   "type": "object",
+   "properties": {
+    "location": {
+     "$ref": "Point"
+    },
+    "x": {
+     "type": "number",
+     "format": "double"
+    },
+    "y": {
+     "type": "number",
+     "format": "double"
+    }
+   }
+  },
+  "Task": {
+   "id": "Task",
+   "type": "object",
+   "properties": {
+    "category": {
+     "type": "string"
+    },
+    "completed": {
+     "type": "boolean"
+    },
+    "description": {
+     "type": "string"
+    },
+    "expiration": {
+     "type": "string",
+     "format": "int64"
+    },
+    "price": {
+     "type": "number",
+     "format": "float"
+    },
+    "requester": {
+     "$ref": "UserDetail"
+    },
+    "requesterLocation": {
+     "$ref": "Point"
+    },
+    "taskId": {
+     "type": "string",
+     "format": "int64"
+    },
+    "taskLocation": {
+     "type": "string"
+    },
+    "timeRequested": {
+     "type": "string",
+     "format": "int64"
+    },
+    "title": {
+     "type": "string"
+    }
+   }
+  },
+  "TaskCollection": {
+   "id": "TaskCollection",
+   "type": "object",
+   "properties": {
+    "items": {
+     "type": "array",
+     "items": {
+      "$ref": "Task"
+     }
+    }
+   }
+  },
   "UserDetail": {
    "id": "UserDetail",
    "type": "object",
@@ -90,65 +162,50 @@
      "type": "string"
     }
    }
-  },
-  "UserDetailCollection": {
-   "id": "UserDetailCollection",
-   "type": "object",
-   "properties": {
-    "items": {
-     "type": "array",
-     "items": {
-      "$ref": "UserDetail"
-     }
-    }
-   }
   }
  },
  "resources": {
-  "users": {
+  "tasks": {
    "methods": {
-    "getUserById": {
-     "id": "atnow.users.getUserById",
-     "path": "userdetail/{Id}",
-     "httpMethod": "GET",
-     "parameters": {
-      "Id": {
-       "type": "string",
-       "required": true,
-       "location": "path"
-      }
-     },
-     "parameterOrder": [
-      "Id"
-     ],
-     "response": {
-      "$ref": "UserDetail"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    },
     "insert": {
-     "id": "atnow.users.insert",
-     "path": "userdetail",
+     "id": "atnow.tasks.insert",
+     "path": "task",
      "httpMethod": "POST",
      "request": {
-      "$ref": "UserDetail",
+      "$ref": "Task",
       "parameterName": "resource"
      },
      "response": {
-      "$ref": "UserDetail"
+      "$ref": "Task"
      },
      "scopes": [
       "https://www.googleapis.com/auth/userinfo.email"
      ]
     },
-    "listUsers": {
-     "id": "atnow.users.listUsers",
-     "path": "userdetail",
+    "list": {
+     "id": "atnow.tasks.list",
+     "path": "task",
      "httpMethod": "GET",
+     "parameters": {
+      "category": {
+       "type": "string",
+       "location": "query"
+      },
+      "filter": {
+       "type": "string",
+       "location": "query"
+      },
+      "limit": {
+       "type": "string",
+       "location": "query"
+      },
+      "price": {
+       "type": "string",
+       "location": "query"
+      }
+     },
      "response": {
-      "$ref": "UserDetailCollection"
+      "$ref": "TaskCollection"
      },
      "scopes": [
       "https://www.googleapis.com/auth/userinfo.email"

@@ -3,7 +3,7 @@
  */
 
 //
-//  GTLAtnowUserDetailCollection.h
+//  GTLAtnowPoint.h
 //
 
 // ----------------------------------------------------------------------------
@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLAtnowUserDetailCollection (0 custom class methods, 1 custom properties)
+//   GTLAtnowPoint (0 custom class methods, 3 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLObject.h"
@@ -21,16 +21,15 @@
   #import "GTLObject.h"
 #endif
 
-@class GTLAtnowUserDetail;
+@class GTLAtnowPoint;
 
 // ----------------------------------------------------------------------------
 //
-//   GTLAtnowUserDetailCollection
+//   GTLAtnowPoint
 //
 
-// This class supports NSFastEnumeration over its "items" property. It also
-// supports -itemAtIndex: to retrieve individual objects from "items".
-
-@interface GTLAtnowUserDetailCollection : GTLCollectionObject
-@property (nonatomic, retain) NSArray *items;  // of GTLAtnowUserDetail
+@interface GTLAtnowPoint : GTLObject
+@property (nonatomic, retain) GTLAtnowPoint *location;
+@property (nonatomic, retain) NSNumber *x;  // doubleValue
+@property (nonatomic, retain) NSNumber *y;  // doubleValue
 @end

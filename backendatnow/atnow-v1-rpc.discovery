@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/tqHQFgI2gdRGkTd_FETVI4FSfKY\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/IWzdhvD90xBQNgz_eCR0xGEGMB8\"",
  "discoveryVersion": "v1",
  "id": "atnow:v1",
  "name": "atnow",
@@ -69,6 +69,78 @@
   }
  },
  "schemas": {
+  "Point": {
+   "id": "Point",
+   "type": "object",
+   "properties": {
+    "location": {
+     "$ref": "Point"
+    },
+    "x": {
+     "type": "number",
+     "format": "double"
+    },
+    "y": {
+     "type": "number",
+     "format": "double"
+    }
+   }
+  },
+  "Task": {
+   "id": "Task",
+   "type": "object",
+   "properties": {
+    "category": {
+     "type": "string"
+    },
+    "completed": {
+     "type": "boolean"
+    },
+    "description": {
+     "type": "string"
+    },
+    "expiration": {
+     "type": "string",
+     "format": "int64"
+    },
+    "price": {
+     "type": "number",
+     "format": "float"
+    },
+    "requester": {
+     "$ref": "UserDetail"
+    },
+    "requesterLocation": {
+     "$ref": "Point"
+    },
+    "taskId": {
+     "type": "string",
+     "format": "int64"
+    },
+    "taskLocation": {
+     "type": "string"
+    },
+    "timeRequested": {
+     "type": "string",
+     "format": "int64"
+    },
+    "title": {
+     "type": "string"
+    }
+   }
+  },
+  "TaskCollection": {
+   "id": "TaskCollection",
+   "type": "object",
+   "properties": {
+    "items": {
+     "type": "array",
+     "items": {
+      "$ref": "Task"
+     }
+    }
+   }
+  },
   "UserDetail": {
    "id": "UserDetail",
    "type": "object",
@@ -88,62 +160,45 @@
      "type": "string"
     }
    }
-  },
-  "UserDetailCollection": {
-   "id": "UserDetailCollection",
-   "type": "object",
-   "properties": {
-    "items": {
-     "type": "array",
-     "items": {
-      "$ref": "UserDetail"
-     }
-    }
-   }
   }
  },
  "methods": {
-  "atnow.users.getUserById": {
-   "id": "atnow.users.getUserById",
-   "allowGet": true,
-   "parameters": {
-    "Id": {
-     "type": "string",
-     "required": true
-    }
-   },
-   "parameterOrder": [
-    "Id"
-   ],
-   "returns": {
-    "$ref": "UserDetail"
-   },
-   "scopes": [
-    "https://www.googleapis.com/auth/userinfo.email"
-   ]
-  },
-  "atnow.users.insert": {
-   "id": "atnow.users.insert",
+  "atnow.tasks.insert": {
+   "id": "atnow.tasks.insert",
    "parameters": {
     "resource": {
-     "$ref": "UserDetail"
+     "$ref": "Task"
     }
    },
    "parameterOrder": [
     "resource"
    ],
    "returns": {
-    "$ref": "UserDetail"
+    "$ref": "Task"
    },
    "scopes": [
     "https://www.googleapis.com/auth/userinfo.email"
    ]
   },
-  "atnow.users.listUsers": {
-   "id": "atnow.users.listUsers",
+  "atnow.tasks.list": {
+   "id": "atnow.tasks.list",
    "allowGet": true,
+   "parameters": {
+    "category": {
+     "type": "string"
+    },
+    "filter": {
+     "type": "string"
+    },
+    "limit": {
+     "type": "string"
+    },
+    "price": {
+     "type": "string"
+    }
+   },
    "returns": {
-    "$ref": "UserDetailCollection"
+    "$ref": "TaskCollection"
    },
    "scopes": [
     "https://www.googleapis.com/auth/userinfo.email"

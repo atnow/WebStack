@@ -18,8 +18,10 @@
 
 #import "GTLAtnowConstants.m"
 
+#import "GTLAtnowPoint.m"
+#import "GTLAtnowTask.m"
+#import "GTLAtnowTaskCollection.m"
 #import "GTLAtnowUserDetail.m"
-#import "GTLAtnowUserDetailCollection.m"
 
 #import "GTLQueryAtnow.m"
 #import "GTLServiceAtnow.m"

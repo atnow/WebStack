@@ -3,7 +3,7 @@
  */
 
 //
-//  GTLAtnow.h
+//  GTLAtnowPoint.m
 //
 
 // ----------------------------------------------------------------------------
@@ -12,11 +12,16 @@
 //   atnow/v1
 // Description:
 //   This is an API
+// Classes:
+//   GTLAtnowPoint (0 custom class methods, 3 custom properties)
 
-#import "GTLAtnowConstants.h"
+#import "GTLAtnowPoint.h"
 
-#import "GTLAtnowUserDetail.h"
-#import "GTLAtnowUserDetailCollection.h"
+// ----------------------------------------------------------------------------
+//
+//   GTLAtnowPoint
+//
 
-#import "GTLQueryAtnow.h"
-#import "GTLServiceAtnow.h"
+@implementation GTLAtnowPoint
+@dynamic location, x, y;
+@end

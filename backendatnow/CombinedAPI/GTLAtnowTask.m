@@ -3,7 +3,7 @@
  */
 
 //
-//  GTLAtnowUserDetailCollection.m
+//  GTLAtnowTask.m
 //
 
 // ----------------------------------------------------------------------------
@@ -13,23 +13,25 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLAtnowUserDetailCollection (0 custom class methods, 1 custom properties)
+//   GTLAtnowTask (0 custom class methods, 11 custom properties)
 
-#import "GTLAtnowUserDetailCollection.h"
+#import "GTLAtnowTask.h"
 
+#import "GTLAtnowPoint.h"
 #import "GTLAtnowUserDetail.h"
 
 // ----------------------------------------------------------------------------
 //
-//   GTLAtnowUserDetailCollection
+//   GTLAtnowTask
 //
 
-@implementation GTLAtnowUserDetailCollection
-@dynamic items;
+@implementation GTLAtnowTask
+@dynamic category, completed, descriptionProperty, expiration, price, requester,
+         requesterLocation, taskId, taskLocation, timeRequested, title;
 
-+ (NSDictionary *)arrayPropertyToClassMap {
++ (NSDictionary *)propertyToJSONKeyMap {
   NSDictionary *map = @{
-    @"items" : [GTLAtnowUserDetail class]
+    @"descriptionProperty" : @"description"
   };
   return map;
 }
