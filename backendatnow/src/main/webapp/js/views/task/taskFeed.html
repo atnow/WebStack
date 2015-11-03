@@ -1,37 +1,37 @@
 <div class="container">
-	<div class="jumbotron">
-		<h1>@Now</h1>
-		<p>a task marketplace for college students</p>
-	</div>	
-	<div class="row">
-		<table id="task-table" class="table table-striped" st-table="displayedTasks" st-safe-src="safeTasks">
-		    <thead>
-		      <tr>
-		        <th st-sort="title" class="table-header"><span>Task</span></th>
-		        <th st-sort="price" class="table-header"><span>Price</span></th>
-		        <th st-sort="category" class="table-header"><span>Category</span></th>
-		        <th st-sort="expiration" class="table-header"><span>Expiration</span></th>
-		        <th>Link</th>
-		      </tr>
-		    </thead>
-		    <tbody>
-		   		<tr ng-repeat="task in displayedTasks">
-		    		<td ng-bind="task.title"></td>
-		    		<td ng-bind="task.price"></td>
-		    		<td ng-bind="task.category"></td>
-		    		<td ng-bind="(task.expiration | date: 'MM/dd/yyyy h:mma')"></td>
-          			<td><a data-ng-href="#/task/{{task.taskId}}"><i class="glyphicon glyphicon-info-sign"></a></td>
-		    	</tr>
-		    </tbody>
-		    <tfoot>
-		    	<tr>
-		    		<td colspan="5" class="text-center">
-		    			<div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
-		    		</td>
-		    	</tr>	
-		    </tfoot>
-		</table>
-	</div>
-  	<div><button id="newTask" class="btn btn-primary" data-ng-click="newTask()" value="New Task"><span>New Task</span></button></div>
+  <div class="jumbotron">
+    <h1>@Now</h1>
+    <p>a task marketplace for college students</p>
+  </div>  
+  <div class="row">
+    <table id="task-table" class="table table-striped" data-st-table="displayedTasks" data-st-safe-src="safeTasks">
+        <thead>
+          <tr>
+            <th data-st-sort="title" class="table-header"><span>Task</span></th>
+            <th data-st-sort="price" class="table-header"><span>Price</span></th>
+            <th data-st-sort="category" class="table-header"><span>Category</span></th>
+            <th data-st-sort="expiration" class="table-header"><span>Expiration</span></th>
+            <th>Link</th>
+          </tr>
+        </thead>
+        <tbody>
+           <tr data-ng-repeat="task in displayedTasks">
+            <td data-ng-bind="task.title"></td>
+            <td data-ng-bind="task.price"></td>
+            <td data-ng-bind="task.category"></td>
+            <td data-ng-bind="(task.expiration | date: 'MM/dd/yyyy h:mma')"></td>
+                <td><a data-ng-href="#/task/{{task.taskId}}"><i class="glyphicon glyphicon-info-sign"></i></a></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5" class="text-center">
+              <div data-st-pagination="" data-st-items-by-page="itemsByPage" data-st-displayed-pages="7"></div>
+            </td>
+          </tr>  
+        </tfoot>
+    </table>
+  </div>
+    <div><button id="newTask" class="btn btn-primary" data-ng-click="newTask()" value="New Task"><span>New Task</span></button></div>
 </div>
 

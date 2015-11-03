@@ -1,0 +1,28 @@
+<div class ="container">
+  <h2>User Sign Up</h2>
+<br>
+  <form>
+      <div class="row">
+        <div class="col-md-4">
+          <label class="control-label input-group">Edu Email</label>
+          <input type="text" placeholder="Edu email" class="form-control" data-ng-model="newUser.eduEmail"/>
+          <br>
+          <label class="control-label input-group">Phone Number</label>
+          <input type="text" placeholder="Phone Number" class="form-control" data-ng-model="newUser.phoneNumber"/>
+          <br>
+          <label class="control-label input-group">Prefered method of contact</label>
+          <div class="btn-group">
+            <label class="btn btn-default" data-ng-model="newUser.contactMethod" data-uib-btn-radio="'phone'">Phone</label>
+            <label class="btn btn-default" data-ng-model="newUser.contactMethod" data-uib-btn-radio="'eduEmail'">Gmail</label>
+            <label class="btn btn-default" data-ng-model="newUser.contactMethod" data-uib-btn-radio="'gmail'">Edu Email</label>
+          </div>
+          <div class="row">
+            <div class="pull-right">
+              <br>
+              <input id="newTask" type="submit" class="btn btn-primary" data-ng-click="commitUser()">
+            </div>
+          </div>
+        </div>
+      </div>
+  </form>
+</div>

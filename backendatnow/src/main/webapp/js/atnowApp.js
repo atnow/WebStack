@@ -71,10 +71,12 @@
 .controller('UserFormController', function ($scope, $http, $location) {
   $scope.newUser = {};
   $scope.newUser.eduEmail = '';
+  $scope.newUser.phoneNumber = '';
+  $scope.newUser.contactMethod = '';
   
   $scope.commitUser = function() {
     console.log('committing');
-    gapi.client.atnow.users.insert({eduEmail: $scope.newUser.eduEmail}).execute(function(resp) {
+    gapi.client.atnow.users.insert({eduEmail: $scope.newUser.eduEmail, phoneNumber: $scope.newUser.phoneNumber, contactMethod: $scope.newUser.contactMethod}).execute(function(resp) {
       console.log(resp);
     });
     $location.path("/");
@@ -164,7 +166,7 @@
                 })
                 .when('/newUser', {
                     controller: 'UserFormController',
-                    templateUrl: '/js/views/task/NewUser.html'
+                    templateUrl: '/js/views/user/NewUser.html'
                 })
                 .when('/task/:taskId', {
                     controller: 'TaskController',
