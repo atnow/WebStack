@@ -24,6 +24,21 @@
   $scope.newTask.description = '';
   $scope.newTask.price;
   $scope.newTask.expiration;
+  $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+  $scope.format = $scope.formats[0];
+  $scope.status ={
+    opened: false
+  };
+  $scope.mytime = new Date();
+  $scope.hstep = 1;
+  $scope.mstep = 15;
+  $scope.ismeridian = true;
+
+  
+
+  $scope.open = function(){
+    $scope.status.opened = true;
+  };
   
   $scope.commitTask = function() {
     console.log("committing new task");
@@ -33,6 +48,7 @@
         console.log("insert");
       });
     $location.path("/");
+
 
   }
   
