@@ -87,6 +87,12 @@ public class TaskAPI {
         return tasks;
     }
     
+    @ApiMethod(name = "tasks.get")
+    public Task getTask(@Named("id") String id) {
+        System.out.println("Task Id is: " + id);
+        Long taskId = Long.parseLong(id);
+        return OfyService.ofy().load().type(Task.class).id(taskId).now();
+    }
     
     @ApiMethod(name = "tasks.insert")
     public Task insert(Task task, User user) throws OAuthRequestException, IOException {

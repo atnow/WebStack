@@ -20,7 +20,7 @@ public class Task {
     private Long timeRequested;
     private Long expiration;
     private String taskLocation;
-    private Point requesterLocation;    
+    private Point requesterLocation;
     private boolean completed;
     @Index private float price;
     @Load Ref<UserDetail> requester;

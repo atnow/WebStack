@@ -20,7 +20,7 @@
 		    		<td ng-bind="task.price"></td>
 		    		<td ng-bind="task.category"></td>
 		    		<td ng-bind="task.expiration"></td>
-		    		<td>undefined</td>
+          			<td><a data-ng-href="#/task/{{task.taskId}}"><span data-ng-bind="task.taskId"></span></a></td>
 		    	</tr>
 		    </tbody>
 		    <tfoot>
@@ -32,6 +32,6 @@
 		    </tfoot>
 		</table>
 	</div>
-	<div><input id="newTask" type="New Task" class="btn btn-primary" data-ng-click="newTask()" value="New Task"></div>
+  	<div><button id="newTask" class="btn btn-primary" data-ng-click="newTask()" value="New Task"><span>New Task</span></button></div>
 </div>
 

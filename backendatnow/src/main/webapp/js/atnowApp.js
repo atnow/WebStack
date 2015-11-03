@@ -2,7 +2,7 @@
 
   var atnowApp = angular.module('atnowApp', ['ngRoute', 'smart-table', 'ngAnimate', 'ui.bootstrap'])
 
-  .controller("TaskFeedController", function($scope, $location) {
+.controller("TaskFeedController", function($scope, $location) {
 
   gapi.client.atnow.tasks.list().execute(
       function(resp){
@@ -36,6 +36,17 @@
 
   }
   
+})
+
+.controller("TaskController", function($scope, $routeParams, $location) {
+
+  gapi.client.atnow.tasks.get({id:$routeParams.taskId}).execute(
+      function(resp){
+       $scope.$apply( function(){
+       console.log(resp);
+       $scope.taskpage=resp || {};
+      });
+    });
 })
 
 .controller('UserFormController', function ($scope, $http, $location) {
@@ -135,6 +146,10 @@
                 .when('/newUser', {
                     controller: 'UserFormController',
                     templateUrl: '/js/views/task/NewUser.html'
+                })
+                .when('/task/:taskId', {
+                    controller: 'TaskController',
+                    templateUrl: '/js/views/task/TaskPage.html'
                 })
                 .otherwise({ redirectTo: '/'});
 
