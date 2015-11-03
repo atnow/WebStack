@@ -4,31 +4,31 @@
 		<p>a task marketplace for college students</p>
 	</div>	
 	<div class="row">
-		<table id="taskTable" class="table table-striped" st-table="displayedTasks" st-safe-src="safeTasks">
+		<table id="task-table" class="table table-striped" st-table="displayedTasks" st-safe-src="safeTasks">
 		    <thead>
 		      <tr>
-		        <th st-sort="title">Task</th>
-		        <th st-sort="price">Price</th>
-		        <th st-sort="category">Category</th>
-		        <th st-sort="expiration">Expiration</th>
+		        <th st-sort="title" class="table-header">Task</th>
+		        <th st-sort="price" class="table-header">Price</th>
+		        <th st-sort="category" class="table-header">Category</th>
+		        <th st-sort="expiration" class="table-header">Expiration</th>
 		        <th>Link</th>
 		      </tr>
 		    </thead>
 		    <tbody>
-		    <tr ng-repeat="task in displayedTasks">
-		    	<td ng-bind="task.title"></td>
-		    	<td ng-bind="task.price"></dt>
-		    	<td ng-bind="task.category"></td>
-		    	<td ng-bind="task.expiration"></td>
-		    	<th>undefined</th>
-		    </tr>
+		   		<tr ng-repeat="task in displayedTasks">
+		    		<td ng-bind="task.title"></td>
+		    		<td ng-bind="task.price"></td>
+		    		<td ng-bind="task.category"></td>
+		    		<td ng-bind="task.expiration"></td>
+		    		<td>undefined</td>
+		    	</tr>
 		    </tbody>
 		    <tfoot>
 		    	<tr>
 		    		<td colspan="5" class="text-center">
 		    			<div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
 		    		</td>
-		    	</tr>
+		    	</tr>	
 		    </tfoot>
 		</table>
 	</div>
