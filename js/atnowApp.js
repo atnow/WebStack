@@ -1,15 +1,12 @@
+define(function (require){
 'use strict';
+var angular = require("angular");
 
-  var atnowApp = angular.module('atnowApp', ['ngRoute', 'smart-table', 'ngAnimate', 'ui.bootstrap'])
+var atnowApp = angular.module('atnowApp', [])
 
 .controller("TaskFeedController", function($scope, $location) {
 
-  gapi.client.atnow.tasks.list().execute(
-      function(resp){
-       $scope.$apply( function(){
-       $scope.safeTasks=resp.items || [];
-      });
-    });
+  $scope.safeTasks={};
   $scope.displayedTasks=[].concat($scope.safeTasks);
   $scope.itemsByPage=2;
   $scope.newTask = function() {
@@ -46,12 +43,6 @@
     $scope.mydate.setHours($scope.mytime.getHours());
     $scope.mydate.setMinutes($scope.mytime.getMinutes());
     $scope.mydate.setMilliseconds($scope.mytime.getMilliseconds());
-
-    gapi.client.atnow.tasks.insert({title: $scope.newTask.title, 
-      description: $scope.newTask.description, 
-      price: $scope.newTask.price, expiration: $scope.mydate.getTime()}).execute(function(resp) {
-        console.log("insert");
-      });
     $location.path("/");
   }
   
@@ -68,28 +59,10 @@
     });
 
   $scope.claimTask = function() {
-    console.log($scope.taskpage.taskId);
-    gapi.client.atnow.users.addTask({taskId: $scope.taskpage.taskId}).execute(
-      function(resp){
-      });
   }
 })
 
 .controller('UserDetailController', function($scope, $location){
-  gapi.client.oauth2.userinfo.get().execute(function(resp) {
-    if (!resp.code) {
-      console.log(resp);
-      $scope.$apply( function(){
-        $scope.googleUser=resp || {};
-      });
-    }
-  });
-  gapi.client.atnow.users.checkDetail().execute(function(resp) {
-    $scope.$apply( function(){
-      console.log(resp);
-      $scope.userDetail=resp || {};
-    });
-  });
 })
 
 .controller('UserFormController', function ($scope, $http, $location) {
@@ -100,64 +73,16 @@
   
   $scope.commitUser = function() {
     console.log('committing');
-    gapi.client.atnow.users.insert({eduEmail: $scope.newUser.eduEmail, phoneNumber: $scope.newUser.phoneNumber, contactMethod: $scope.newUser.contactMethod}).execute(function(resp) {
-      console.log(resp);
-    });
     $location.path("/");
   }
   
 })
 
 .controller('NavBarController', function($scope, $http, $location) {
-  
-  var userAuthed = function() {
-    var request = gapi.client.oauth2.userinfo.get().execute(function(resp) {
-      if (!resp.code) {
-        gapi.client.atnow.users.checkDetail().execute(
-            function(resp) {
-              if (Object.keys(resp).length <= 1) {
-                console.log("no user detail in database redirecting to user detail page");
-                $location.path("/newUser");
-                $scope.$apply();
-              } else {
-                console.log("user detail in database");
-              }
-            });
-        atnow.index.signedIn = true;
-        document.getElementById('signinButton').innerHTML = 'Sign out';
-      }
-    });
-  };
-
-  /**
-   * Handles the auth flow, with the given value for immediate mode.
-   * @param {boolean} mode Whether or not to use immediate mode.
-   * @param {Function} callback Callback to call on completion.
-   */
-  var signin = function(mode, callback) {
-    gapi.auth.authorize({client_id: atnow.index.CLIENT_ID,
-        scope: atnow.index.SCOPES, immediate: mode},
-        callback);
-  };
-
-  /**
-   * Presents the user with the authorization popup.
-   */
-  var auth = function() {
-    if (!atnow.index.signedIn) {
-      atnow.index.signin(false,
-          userAuthed);
-    } else {
-      atnow.index.signedIn = false;
-      document.getElementById('signinButton').innerHTML = 'Sign in';
-    }
-  };
-  
-   signin(true, userAuthed);
 
 })
 
-  .config(['$routeProvider', '$provide', '$controllerProvider',
+  .config(['$provide', '$controllerProvider', '$routeProvider',
 
         function ($routeProvider, $provide, $controllerProvider) {
 
@@ -201,3 +126,10 @@
                 .otherwise({ redirectTo: '/'});
 
     }]);
+
+  atnowApp.init = function() {
+    angular.bootstrap(document, ["atnowApp"])
+  };
+  
+  return atnowApp;
+});
