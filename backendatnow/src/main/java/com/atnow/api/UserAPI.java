@@ -8,6 +8,7 @@ import javax.inject.Named;
 
 import com.atnow.ofy.OfyService;
 import com.googlecode.objectify.ObjectifyService;
+import com.googlecode.objectify.Key;
 
 
 import com.atnow.helper.Constants;
@@ -43,7 +44,6 @@ public class UserAPI {
     
     @ApiMethod(name = "users.getUserById")
     public UserDetail getUserById(@Named("Id") String id, User user){
-    
         return    OfyService.ofy().load().type(UserDetail.class).id(id).now();     
     }
     
@@ -59,4 +59,13 @@ public class UserAPI {
         return users;
     }
 
+    @ApiMethod(name = "users.addTask")
+    public void addTask(Task task, User user){
+        UserDetail userD = getUserById(user.getUserId(), user);
+        Task fullTask = OfyService.ofy().load().type(Task.class).id(task.getTaskId()).now();
+        System.out.println("adding " + task.getTaskId());
+        userD.claimTask(fullTask.getKey());
+        userD.returnFirstKey();
+        OfyService.ofy().save().entity(userD).now();
+    }
 }

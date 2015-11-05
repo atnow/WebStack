@@ -1,10 +1,13 @@
 package com.atnow.model;
 
 import java.util.List;
+import java.util.ArrayList;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Load;
+import com.googlecode.objectify.Key;
 import com.google.appengine.api.users.User;
+import com.atnow.model.Task;
 
 @Entity
 public class UserDetail {
@@ -15,9 +18,10 @@ public class UserDetail {
     private float rating;
 //    private @Load List<Ref<Task>> tasksCompleted;
 //    private @Load List<Ref<Task>> tasksRequested;
+    private List<Key<Task>> currentTasks;
     
     public UserDetail(){
-
+        this.currentTasks = new ArrayList<Key<Task>>();
     }
 
 /*    public UserDetail(User user, String eduEmail, int numRatings, float rating, List<Long> tasksCompleted,
@@ -35,10 +39,21 @@ public class UserDetail {
         this.eduEmail = eduEmail;
         this.numRatings = numRatings;
         this.rating = rating;
+        this.currentTasks = new ArrayList<Key<Task>>();
     }
+
+    public void claimTask(Key<Task> taskKey){
+        this.currentTasks.add(taskKey);
+        System.out.println("claim task" + this.currentTasks.get(0));
+    }
+
 
     public UserDetail(User user) {
         this.userId = user.getUserId();
+    }
+
+    public void returnFirstKey(){
+        System.out.println("return first key " + this.currentTasks.get(0));
     }
 
     public String getUserId() {

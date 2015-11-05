@@ -10,6 +10,7 @@
 		        <th st-sort="title" class="table-header"><span>Task</span></th>
 		        <th st-sort="price" class="table-header"><span>Price</span></th>
 		        <th st-sort="category" class="table-header"><span>Category</span></th>
+		        <th st-sort="timeRequested" class="table-header"><span>Post time</span></th>
 		        <th st-sort="expiration" class="table-header"><span>Expiration</span></th>
 		        <th>Link</th>
 		      </tr>
@@ -19,6 +20,7 @@
 		    		<td ng-bind="task.title"></td>
 		    		<td ng-bind="task.price"></td>
 		    		<td ng-bind="task.category"></td>
+		    		<td ng-bind="(task.timeRequested | date: 'MM/dd/yyyy h:mma')"></td>
 		    		<td ng-bind="(task.expiration | date: 'MM/dd/yyyy h:mma')"></td>
           			<td><a data-ng-href="#/task/{{task.taskId}}"><i class="glyphicon glyphicon-info-sign"></a></td>
 		    	</tr>

@@ -66,6 +66,13 @@
        $scope.taskpage=resp || {};
       });
     });
+
+  $scope.claimTask = function() {
+    console.log($scope.taskpage.taskId);
+    gapi.client.atnow.users.addTask({taskId: $scope.taskpage.taskId}).execute(
+      function(resp){
+      });
+  }
 })
 
 .controller('UserFormController', function ($scope, $http, $location) {
@@ -97,6 +104,7 @@
               } else {
                 console.log("user detail in database");
                 console.log(resp);
+                console.log(resp.eduEmail);
               }
             });
         atnow.index.signedIn = true;

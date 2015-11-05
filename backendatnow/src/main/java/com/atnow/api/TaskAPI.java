@@ -26,33 +26,6 @@ import com.google.appengine.api.users.User;
         )
 public class TaskAPI {
 
-    
-    /*public enum ListFilter {
-        PRICE("price"),
-        CATEGORY("category"),
-        EXPIRATION("expiration"),
-        LOCATION("location"),
-        REQUESTTIME("request");
-        
-        private final String filter;
-
-        ListFilter(final String filter) {
-            this.filter = filter;
-        }
-
-        public String getListFilter() {
-            return filter;
-        }
-
-        @Override
-        public String toString() {
-            return filter;
-        }
-
-    }*/
-    
-
-
     private static final String DEFAULT_LIMIT = "100";
     
     @ApiMethod(name = "tasks.list")
@@ -109,4 +82,6 @@ public class TaskAPI {
         throw new OAuthRequestException("invalid user");
         
     }
+
+    
 }

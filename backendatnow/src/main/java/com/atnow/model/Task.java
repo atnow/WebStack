@@ -4,11 +4,14 @@ import java.awt.Point;
 import java.util.Date;
 
 import com.googlecode.objectify.Ref;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Load;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.Parent;
+import com.google.api.server.spi.config.AnnotationBoolean;
+import com.google.api.server.spi.config.ApiResourceProperty;
 
 @Entity
 public class Task {
@@ -64,6 +67,12 @@ public class Task {
         this.completed = completed;
         this.price = price;
         this.title = title;
+    }
+
+    @ApiResourceProperty(ignored = AnnotationBoolean.TRUE) 
+    public Key<Task> getKey(){
+        System.out.println(Key.create(Task.class, this.taskId));
+        return Key.create(Task.class, this.taskId);
     }
 
     public String getTitle() {
