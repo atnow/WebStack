@@ -14,6 +14,8 @@ public class UserDetail {
     
     @Id private String userId;
     private String eduEmail;
+    private String phoneNumber;
+    private String contactMethod;
     private int numRatings;
     private float rating;
 //    private @Load List<Ref<Task>> tasksCompleted;
@@ -34,9 +36,11 @@ public class UserDetail {
         this.tasksRequested = tasksRequested;
     }
 */
-    public UserDetail(User user, String eduEmail, int numRatings, float rating) {
+    public UserDetail(User user, String eduEmail, String phoneNumber, String communicationMethod, int numRatings, float rating) {
         this.userId = user.getUserId();
         this.eduEmail = eduEmail;
+        this.phoneNumber = phoneNumber;
+        this.contactMethod = communicationMethod;
         this.numRatings = numRatings;
         this.rating = rating;
         this.currentTasks = new ArrayList<Key<Task>>();
@@ -68,6 +72,22 @@ public class UserDetail {
         return numRatings;
     }
     
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(final String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getContactMethod() {
+        return contactMethod;
+    }
+
+    public void setContactMethod(final String contactMethod) {
+        this.contactMethod = contactMethod;
+    }
+
     public void setNumRatings(final int numRatings) {
         this.numRatings = numRatings;
     }

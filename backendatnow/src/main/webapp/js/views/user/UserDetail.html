@@ -1,0 +1,52 @@
+<div class ="container">
+
+<div class="row">
+  <div class="col-md-11 col-md-offset-1">
+    <h2 data-ng-bind="googleUser.name"></h2>
+    <div class="row">
+      <div class="col-md-8">
+        <div class="row">
+          <div class="col-md-4">
+            <strong>Gmail</strong>
+          </div>
+          <div class="col-md-8">
+            <span data-ng-bind="googleUser.email"></span>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-4">
+            <strong>Edu Email</strong>
+          </div>
+          <div class="col-md-8">
+            <span data-ng-bind="userDetail.eduEmail"></span>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-4">
+            <strong>Phone Number</strong>
+          </div>
+          <div class="col-md-8">
+            <span data-ng-bind="userDetail.phoneNumber"></span>
+          </div>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-4">
+            <strong>Preferred Method of Contact</strong>
+          </div>
+          <div class="col-md-8">
+            <span data-ng-bind="userDetail.contactMethod"></span>
+          </div>
+        </div>
+        
+      </div>
+      <div class="col-md-4">
+        <span class="pull-right"><img data-ng-src="{{googleUser.picture}}" class="user-image"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>

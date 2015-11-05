@@ -75,13 +75,32 @@
   }
 })
 
+.controller('UserDetailController', function($scope, $location){
+  gapi.client.oauth2.userinfo.get().execute(function(resp) {
+    if (!resp.code) {
+      console.log(resp);
+      $scope.$apply( function(){
+        $scope.googleUser=resp || {};
+      });
+    }
+  });
+  gapi.client.atnow.users.checkDetail().execute(function(resp) {
+    $scope.$apply( function(){
+      console.log(resp);
+      $scope.userDetail=resp || {};
+    });
+  });
+})
+
 .controller('UserFormController', function ($scope, $http, $location) {
   $scope.newUser = {};
   $scope.newUser.eduEmail = '';
+  $scope.newUser.phoneNumber = '';
+  $scope.newUser.contactMethod = '';
   
   $scope.commitUser = function() {
     console.log('committing');
-    gapi.client.atnow.users.insert({eduEmail: $scope.newUser.eduEmail}).execute(function(resp) {
+    gapi.client.atnow.users.insert({eduEmail: $scope.newUser.eduEmail, phoneNumber: $scope.newUser.phoneNumber, contactMethod: $scope.newUser.contactMethod}).execute(function(resp) {
       console.log(resp);
     });
     $location.path("/");
@@ -98,13 +117,10 @@
             function(resp) {
               if (Object.keys(resp).length <= 1) {
                 console.log("no user detail in database redirecting to user detail page");
-                console.log(resp);
                 $location.path("/newUser");
                 $scope.$apply();
               } else {
                 console.log("user detail in database");
-                console.log(resp);
-                console.log(resp.eduEmail);
               }
             });
         atnow.index.signedIn = true;
@@ -172,7 +188,11 @@
                 })
                 .when('/newUser', {
                     controller: 'UserFormController',
-                    templateUrl: '/js/views/task/NewUser.html'
+                    templateUrl: '/js/views/user/NewUser.html'
+                })
+                .when('/myUser', {
+                    controller: 'UserDetailController',
+                    templateUrl: '/js/views/user/UserDetail.html'
                 })
                 .when('/task/:taskId', {
                     controller: 'TaskController',

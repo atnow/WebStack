@@ -43,6 +43,11 @@ form {
     content: '\25B2';
 }
 
+.user-image{
+  height:80%;
+  width:80%;
+}
+
 .st-sort-descent:after{
     content: '\25BC'; 
 }
