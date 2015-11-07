@@ -1,55 +1,59 @@
 <!doctype html>
-<html>
+<html data-ng-app="atnowApp">
 <head>
   <meta charset="utf-8">
 
   <title>@Now</title>
   <meta name="description" content="@Now">
-  <meta name="viewport" content="width=device-width">
-  <link rel="stylesheet" href="css/reset.css">
-  <link rel="stylesheet" href="css/styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
   <!-- Optional theme -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous"> 
+  <link rel="stylesheet" href="css/style.css">
   <script type="text/javascript" src="http://www.parsecdn.com/js/parse-latest.js"></script>
 </head>
 
 <body>
 
-<div class="navbar navbar-inverse navbar-fixed-top" data-ng-controller="NavBarController">
-    <div class="navbar-inner">
-        <div class="container">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="brand" href="#/">@Now</a>
-            <div class="nav-collapse collapse pull-right">
-                <span id="signinButton" class="btn" data-ng-click="signIn()">Sign in</span>
-            </div>
-        </div>
-    </div>
-</div>
+<nav class="navbar navbar-inverse navbar-fixed-top" data-ng-controller="NavBarController">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#atnow-navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle Navigation></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#/">@Now</a>
+  </div>
+
+  <div class="collapse navbar-collapse" id="atnow-navbar-collapse">
+    <ul class="nav navbar-nav">
+      <li><a data-ng-href="#/">Feed</a></li>
+      <li><a data-ng-href="#/dashboard">Dashboard</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><button type="button" class="btn navbar-btn btn-default">Sign in</button></li>
+      <li><a data-ng-click="register()">Register</a></li>
+    </ul>
+  </div>
+</nav>
 
 <div class="slide-animate-container"> 
-    <div data-ng-view id="ng-view" class="slide-animate"></div>
+    <div data-ui-view id="ui-view" class="slide-animate"></div>
 </div>
 
-<script src="./js/ThirdParty/require.js" data-main="./js/main"></script>
-  <script type="text/javascript">
-    Parse.initialize("0oeGyi6DM6AwliCkDTBxr14OLcrgV3MYx1Gc4wHK", "Lba978MC6EMU6g7msUvLiUHza8vjkqGVf1Qq1eSo");    
-    
-    var TestObject = Parse.Object.extend("TestObject");
-    var testObject = new TestObject();
-      testObject.save({foo: "bar"}, {
-      success: function(object) {
-        $(".success").show();
-      },
-      error: function(model, error) {
-        $(".error").show();
-      }
-    });
-  </script>
+<script type="text/javascript">
+  Parse.initialize("0oeGyi6DM6AwliCkDTBxr14OLcrgV3MYx1Gc4wHK", "Lba978MC6EMU6g7msUvLiUHza8vjkqGVf1Qq1eSo");    
+</script>
+<script src="./js/ThirdParty/jquery-2.1.4.min.js"></script>
+<script src="./js/ThirdParty/angular.js"></script>
+<script src="./js/ThirdParty/angular-ui-router.js"></script>
+<script src="./js/ThirdParty/angular-animate.js"></script>
+<script src="./js/ThirdParty/ui-bootstrap-tpls-0.14.3.js"> </script>
+<script src="./js/ThirdParty/smart-table.js"></script>
+<script src="./js/atnowApp.js"></script>
+
+
 </body>
 </html>

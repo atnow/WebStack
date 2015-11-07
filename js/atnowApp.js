@@ -1,26 +1,21 @@
-define(function (require){
 'use strict';
-var angular = require("angular");
+var atnowApp = angular.module('atnowApp', ["ui.router", "ui.bootstrap", "smart-table", "ngAnimate"]);
 
-var atnowApp = angular.module('atnowApp', [])
-
-.controller("TaskFeedController", function($scope, $location) {
-
-  $scope.safeTasks={};
+atnowApp.controller("TaskFeedController", function($scope, $location, Task, parseTasks) {
+  $scope.safeTasks= parseTasks;
   $scope.displayedTasks=[].concat($scope.safeTasks);
-  $scope.itemsByPage=2;
+  $scope.itemsByPage=5;
   $scope.newTask = function() {
     $location.path("/newTask");
   }
-})
+});
 
-.controller('TaskFormController', function ($scope, $http, $location) {
+atnowApp.controller('TaskFormController', function ($scope, $http, $location) {
   
   $scope.newTask = {};
   $scope.newTask.title = '';
   $scope.newTask.description = '';
   $scope.newTask.price;
-  $scope.newTask.expiration;
   $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
   $scope.format = $scope.formats[0];
   $scope.status ={
@@ -32,7 +27,7 @@ var atnowApp = angular.module('atnowApp', [])
   $scope.mstep = 1;
   $scope.ismeridian = true;
 
-  $scope.mydate = new Date();
+  $scope.expiration = new Date();
 
   $scope.open = function(){
     $scope.status.opened = true;
@@ -40,15 +35,20 @@ var atnowApp = angular.module('atnowApp', [])
   
   $scope.commitTask = function() {
     //combine date and time
-    $scope.mydate.setHours($scope.mytime.getHours());
-    $scope.mydate.setMinutes($scope.mytime.getMinutes());
-    $scope.mydate.setMilliseconds($scope.mytime.getMilliseconds());
+    $scope.expiration.setHours($scope.mytime.getHours());
+    $scope.expiration.setMinutes($scope.mytime.getMinutes());
+    $scope.expiration.setMilliseconds($scope.mytime.getMilliseconds());
+    var Task = Parse.Object.extend("Task");
+    var task = new Task();
+    task.save({title: $scope.newTask.title, description: $scope.newTask.description, 
+      price: $scope.newTask.price, expiration: $scope.expiration}).then(function(object) {
+    });
     $location.path("/");
   }
   
-})
+});
 
-.controller("TaskController", function($scope, $routeParams, $location) {
+atnowApp.controller("TaskController", function($scope, $routeParams, $location) {
 
   gapi.client.atnow.tasks.get({id:$routeParams.taskId}).execute(
       function(resp){
@@ -60,12 +60,12 @@ var atnowApp = angular.module('atnowApp', [])
 
   $scope.claimTask = function() {
   }
-})
+});
 
-.controller('UserDetailController', function($scope, $location){
-})
+atnowApp.controller('UserDetailController', function($scope, $location){
+});
 
-.controller('UserFormController', function ($scope, $http, $location) {
+atnowApp.controller('UserFormController', function ($scope, $http, $location) {
   $scope.newUser = {};
   $scope.newUser.eduEmail = '';
   $scope.newUser.phoneNumber = '';
@@ -76,60 +76,137 @@ var atnowApp = angular.module('atnowApp', [])
     $location.path("/");
   }
   
-})
+});
 
-.controller('NavBarController', function($scope, $http, $location) {
+atnowApp.controller('NavBarController', function($scope, $uibModal, $location) {
+  $scope.register = function(){
+    var modalInstance = $uibModal.open({
+      templateUrl: "/js/views/user/registerModal.html",
+      controller: "registerModalController",
+      size:"lg"
+    });
 
-})
+    modalInstance.result.then(function (){
 
-  .config(['$provide', '$controllerProvider', '$routeProvider',
+    });
+  }
+});
 
-        function ($routeProvider, $provide, $controllerProvider) {
+atnowApp.controller('registerModalController', function($scope, $uibModalInstance, $log){
+  $scope.newUser= {
+    email:"",
+    password:"",
+    phone:""
+  };
+  $scope.register = function() {
+    var user = new Parse.User();
+    user.set("username", $scope.newUser.email);
+    user.set("password", $scope.newUser.password);
+    user.set("email", $scope.newUser.email);
+    user.set("phone", $scope.newUser.phone);
+    user.signUp(null, {
+      success: function(user) {
+        $log.log("why?");
+      },
+      error: function(user, error) {
+        alert("Error" + error.code + " " + error.message);
+      }
+    });
+    $uibModalInstance.close();
+  }
+});
 
-            //Change default views and controllers directory using the following:
-            //routeResolverProvider.routeConfig.setBaseDirectories('/app/views', '/app/controllers');
-         /*   atnowApp.register =
-            {
-                controller: $controllerProvider.register,
-                factory: $provide.factory,
-                service: $provide.service
-            };*/
+atnowApp.config(
+
+        function ($stateProvider, $urlRouterProvider, $provide, $controllerProvider) {
+
             atnowApp.controller = $controllerProvider.register;
 
-            $routeProvider
-                //route.resolve() now accepts the convention to use (name of controller & view) as well as the 
-                //path where the controller or view lives in the controllers or views folder if it's in a sub folder. 
-                //For example, the controllers for customers live in controllers/customers and the views are in views/customers.
-                //The controllers for orders live in controllers/orders and the views are in views/orders
-                //The second parameter allows for putting related controllers/views into subfolders to better organize large projects
-                //Thanks to Ton Yeung for the idea and contribution
-                .when('/', {
+            $urlRouterProvider.otherwise("feed");
+            $stateProvider
+                .state('feed', {
+                    url: "/feed",
                     controller: 'TaskFeedController',   
-                    templateUrl: '/js/views/task/TaskFeed.html'
-                    })
-                .when('/newTask', {
+                    templateUrl: '/js/views/task/TaskFeed.html',
+                    resolve:{
+                      parseTasks: function(Task){
+                        var query = new Parse.Query(Task);
+                        return query.find().then(
+                          function(results) {
+                            console.log(results);
+                            return results;
+                          },
+                          function(error) {
+                            alert("Error: " + error.code + " " + error.message);
+                            return error;
+                        });
+                      }
+                      }
+                })
+                .state('newTask', {
+                    url: "/newTask",
                     controller: 'TaskFormController',
                     templateUrl: '/js/views/task/NewTask.html'
                 })
-                .when('/newUser', {
+                .state('newUser', {
+                    url: "/newUser",
                     controller: 'UserFormController',
                     templateUrl: '/js/views/user/NewUser.html'
                 })
-                .when('/myUser', {
+                .state('myUser', {
+                    url: "/myUser",
                     controller: 'UserDetailController',
                     templateUrl: '/js/views/user/UserDetail.html'
                 })
-                .when('/task/:taskId', {
+                .state('/task/:taskId', {
+                    url: "/task/:taskId",
                     controller: 'TaskController',
                     templateUrl: '/js/views/task/TaskPage.html'
-                })
-                .otherwise({ redirectTo: '/'});
+                });
 
-    }]);
+    });
 
-  atnowApp.init = function() {
-    angular.bootstrap(document, ["atnowApp"])
-  };
-  
-  return atnowApp;
-});
+atnowApp.factory("Task", function(){
+  var Task = Parse.Object.extend("Task");
+  Object.defineProperty(Task.prototype, "title", {
+      get: function() {
+        return this.get("title");
+      },
+      set: function(val) {
+        this.set(title, val);
+      }
+  });
+  Object.defineProperty(Task.prototype, "description", {
+      get: function() {
+        return this.get("description");
+      },
+      set: function(val) {
+        this.set(description, val);
+      }
+  });
+  Object.defineProperty(Task.prototype, "price", {
+      get: function() {
+        return this.get("price");
+      },
+      set: function(val) {
+        this.set(price, val);
+      }
+  });
+  Object.defineProperty(Task.prototype, "expiration", {
+      get: function() {
+        return this.get("expiration");
+      },
+      set: function(val) {
+        this.set(expiration, val);
+      }
+  });
+  Object.defineProperty(Task.prototype, "category", {
+    get: function() {
+      return this.get("category");
+    },
+    set: function(val) {
+      this.set(category, val);
+    }
+  });
+  return Task;
+})
