@@ -63,6 +63,7 @@ atnowApp.controller("TaskController", function($scope, $routeParams, $location) 
 });
 
 atnowApp.controller('UserDetailController', function($scope, $location){
+
 });
 
 atnowApp.controller('UserFormController', function ($scope, $http, $location) {
@@ -141,7 +142,7 @@ atnowApp.config(
                             return error;
                         });
                       }
-                      }
+                    }
                 })
                 .state('newTask', {
                     url: "/newTask",
@@ -165,6 +166,66 @@ atnowApp.config(
                 });
 
     });
+
+atnowApp.factory("User", function(){
+  var User = Parse.Object.extend("User");
+  Object.defineProperty(User.prototype, "name", {
+    get: function() {
+      return this.get("fullName");
+    },
+    set: function(val) {
+      this.set(name, val);
+    }
+  });
+  Object.defineProperty(User.prototype, "email", {
+    get: function() {
+      return this.get("email");
+    },
+    set: function(val) {
+      this.set(email, val);
+    }
+  });
+  Object.defineProperty(User.prototype, "phone", {
+    get: function() {
+      return this.get("phone");
+    },
+    set: function(val) {
+      this.set(phone, val);
+    }
+  });
+  Object.defineProperty(User.prototype, "rating", {
+    get: function() {
+      return this.get("rating");
+    },
+    set: function(val) {
+      this.set(rating, val);
+    }
+  });
+  Object.defineProperty(User.prototype, "ratingCount", {
+    get: function() {
+      return this.get("ratingCount");
+    },
+    set: function(val) {
+      this.set(ratingCount, val);
+    }
+  });
+  Object.defineProperty(User.prototype, "tasksClaimed", {
+    get: function() {
+      return this.get("tasksClaimed");
+    },
+    set: function(val) {
+      this.set(tasksClaimed, val);
+    }
+  });
+  Object.defineProperty(User.prototype, "tasksRequested", {
+    get: function() {
+      return this.get("tasksRequested");
+    },
+    set: function(val) {
+      this.set(tasksRequested, val);
+    }
+  });
+});
 
 atnowApp.factory("Task", function(){
   var Task = Parse.Object.extend("Task");
