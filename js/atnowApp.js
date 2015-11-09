@@ -154,8 +154,8 @@ atnowApp.config(
                     controller: 'UserFormController',
                     templateUrl: '/js/views/user/NewUser.html'
                 })
-                .state('myUser', {
-                    url: "/myUser",
+                .state('dashboard', {
+                    url: "/dashboard",
                     controller: 'UserDetailController',
                     templateUrl: '/js/views/user/UserDetail.html'
                 })
