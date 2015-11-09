@@ -62,7 +62,7 @@ atnowApp.controller("TaskController", function($scope, $routeParams, $location) 
   }
 });
 
-atnowApp.controller('UserDetailController', function($scope, $location){
+atnowApp.controller('UserDetailController', function($rootScope, $scope, $location){
 
 });
 
@@ -166,6 +166,10 @@ atnowApp.config(
                 });
 
     });
+
+atnowApp.run(funtion($rootScope) {
+  $rootScope.sessionUser = Parse.User.current();
+});
 
 atnowApp.factory("User", function(){
   var User = Parse.Object.extend("User");
