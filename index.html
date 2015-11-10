@@ -29,11 +29,11 @@
 
   <div class="collapse navbar-collapse" id="atnow-navbar-collapse">
     <ul class="nav navbar-nav">
-      <li><a data-ng-href="#/feed">Feed</a></li>
-      <li><a data-ng-href="#/dashboard">Dashboard</a></li>
+      <li><a data-ng-href="#/feed" data-ng-show="sessionUser" class="ng-cloak">Feed</a></li>
+      <li><a data-ng-href="#/dashboard" data-ng-show="sessionUser" class="ng-cloak">Dashboard</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li><button type="button" class="btn navbar-btn btn-default" data-ng-click="signOut()">Sign out</button></li>
+      <li><button type="button" class="btn navbar-btn btn-default ng-cloak" data-ng-click="signOut()" data-ng-show="sessionUser">Sign out</button></li>
     </ul>
   </div>
 </nav>

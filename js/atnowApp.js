@@ -65,31 +65,8 @@ atnowApp.controller('UserDetailController', function($rootScope, $scope, $locati
 
 });
 
-atnowApp.controller('UserFormController', function ($scope, $http, $location) {
-  $scope.newUser = {};
-  $scope.newUser.eduEmail = '';
-  $scope.newUser.phoneNumber = '';
-  $scope.newUser.contactMethod = '';
-  
-  $scope.commitUser = function() {
-    console.log('committing');
-    $location.path("/");
-  }
-  
-});
 
 atnowApp.controller('NavBarController', function($scope, $state, $rootScope, $log, $location) {
-  /*$scope.register = function(){
-    var modalInstance = $uibModal.open({
-      templateUrl: "/js/views/user/registerModal.html",
-      controller: "registerModalController",
-      size:"lg"
-    });
-
-    modalInstance.result.then(function (){
-
-    });
-  }*/
   $scope.signOut = function(){
     Parse.User.logOut();
     $rootScope.sessionUser=Parse.User.current();
@@ -97,29 +74,6 @@ atnowApp.controller('NavBarController', function($scope, $state, $rootScope, $lo
   }
 });
 
-atnowApp.controller('registerModalController', function($scope, $uibModalInstance, $log){
-  $scope.newUser= {
-    email:"",
-    password:"",
-    phone:""
-  };
-  $scope.register = function() {
-    var user = new Parse.User();
-    user.set("username", $scope.newUser.email);
-    user.set("password", $scope.newUser.password);
-    user.set("email", $scope.newUser.email);
-    user.set("phone", $scope.newUser.phone);
-    user.signUp(null, {
-      success: function(user) {
-        $log.log("why?");
-      },
-      error: function(user, error) {
-        alert("Error" + error.code + " " + error.message);
-      }
-    });
-    $uibModalInstance.close();
-  }
-});
 
 atnowApp.controller('LoginController', function($scope, $log, $state, $rootScope){
   $scope.newUser= {
@@ -135,8 +89,8 @@ atnowApp.controller('LoginController', function($scope, $log, $state, $rootScope
     user.set("phone", $scope.newUser.phone);
     user.signUp(null, {
       success: function(user) {
-        $state.go("feed");
         $rootScope.sessionUser=user;
+        $state.go("feed");
       },
       error: function(user, error) {
         alert("Error" + error.code + " " + error.message);
@@ -148,8 +102,8 @@ atnowApp.controller('LoginController', function($scope, $log, $state, $rootScope
     Parse.User.logIn($scope.loginUser.email, $scope.loginUser.password, {
       success: function(user) {
         // Do stuff after successful login.
-        $state.go("feed");
         $rootScope.sessionUser=user;
+        $state.go("feed");
       },
       error: function(user, error) {
         // The login failed. Check error to see why.
@@ -164,7 +118,10 @@ atnowApp.config(
 
             atnowApp.controller = $controllerProvider.register;
 
-            $urlRouterProvider.otherwise("feed");
+            $urlRouterProvider.otherwise(function($injector){
+              var $state = $injector.get("$state");
+              $state.go("feed");
+            });
             $stateProvider
                 .state('feed', {
                     url: "/feed",
@@ -217,11 +174,12 @@ atnowApp.run(function($rootScope, $state, $log, $location) {
   $rootScope.sessionUser = Parse.User.current();
  // Listen for state changes when using ui-router
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-    $log.log(toState.name);
+    $log.log(toState.name + " " + $rootScope.sessionUser);
     //no need to redirect
     if(toState.name ==="login"){
       if($rootScope.sessionUser){
-        $location.url("/feed");
+        event.preventDefault();
+        $state.go("feed");
       }
       return;
     }
@@ -229,7 +187,8 @@ atnowApp.run(function($rootScope, $state, $log, $location) {
         $log.log("logged in fuck");
         return;
     }
-    $location.url("/login");
+    event.preventDefault();
+    $state.go("login");
   });
 });
 

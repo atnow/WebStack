@@ -51,3 +51,7 @@ form {
 .st-sort-descent:after{
     content: '\25BC'; 
 }
+
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none !important;
+}
