@@ -61,7 +61,7 @@ atnowApp.controller("TaskController", function($scope, $routeParams, $location) 
   }
 });
 
-atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log){
+atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log, User){
   $scope.viewUser = $rootScope.sessionUser;
   $log.log($rootScope.sessionUser);
 });
@@ -171,13 +171,13 @@ atnowApp.config(
 
     });
 
-atnowApp.run(function($rootScope, $state, $log, $location) {
-  $rootScope.sessionUser = Parse.User.current();
+atnowApp.run(function($rootScope, $state, $log, $location, User) {
+  $rootScope.sessionUser = User.current();
  // Listen for state changes when using ui-router
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
     $log.log(toState.name + " " + $rootScope.sessionUser);
     //no need to redirect
-    if(toState.name ==="login"){
+    if(toState.name === "login"){
       if($rootScope.sessionUser){
         event.preventDefault();
         $state.go("feed");
@@ -185,8 +185,7 @@ atnowApp.run(function($rootScope, $state, $log, $location) {
       return;
     }
     if($rootScope.sessionUser){
-        $log.log("logged in fuck");
-        return;
+      return;
     }
     event.preventDefault();
     $state.go("login");
@@ -194,7 +193,7 @@ atnowApp.run(function($rootScope, $state, $log, $location) {
 });
 
 atnowApp.factory("User", function(){
-  var User = Parse.Object.extend("User");
+  var User = Parse.User.extend("User");
   Object.defineProperty(User.prototype, "name", {
     get: function() {
       return this.get("fullName");
@@ -251,6 +250,7 @@ atnowApp.factory("User", function(){
       this.set(tasksRequested, val);
     }
   });
+  return User;
 });
 
 atnowApp.factory("Task", function(){
