@@ -61,8 +61,9 @@ atnowApp.controller("TaskController", function($scope, $routeParams, $location) 
   }
 });
 
-atnowApp.controller('UserDetailController', function($rootScope, $scope, $location){
-
+atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log){
+  $scope.viewUser = $rootScope.sessionUser;
+  $log.log($rootScope.sessionUser);
 });
 
 atnowApp.controller('UserFormController', function ($scope, $http, $location) {
