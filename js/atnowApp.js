@@ -53,7 +53,6 @@ atnowApp.controller("TaskController", function($scope, $routeParams, $location) 
   gapi.client.atnow.tasks.get({id:$routeParams.taskId}).execute(
       function(resp){
        $scope.$apply( function(){
-       console.log(resp);
        $scope.taskpage=resp || {};
       });
     });
@@ -79,8 +78,8 @@ atnowApp.controller('UserFormController', function ($scope, $http, $location) {
   
 });
 
-atnowApp.controller('NavBarController', function($scope, $uibModal, $location) {
-  $scope.register = function(){
+atnowApp.controller('NavBarController', function($scope, $state, $rootScope, $log, $location) {
+  /*$scope.register = function(){
     var modalInstance = $uibModal.open({
       templateUrl: "/js/views/user/registerModal.html",
       controller: "registerModalController",
@@ -90,6 +89,11 @@ atnowApp.controller('NavBarController', function($scope, $uibModal, $location) {
     modalInstance.result.then(function (){
 
     });
+  }*/
+  $scope.signOut = function(){
+    Parse.User.logOut();
+    $rootScope.sessionUser=Parse.User.current();
+    $location.url("/login");
   }
 });
 
@@ -117,6 +121,43 @@ atnowApp.controller('registerModalController', function($scope, $uibModalInstanc
   }
 });
 
+atnowApp.controller('LoginController', function($scope, $log, $state, $rootScope){
+  $scope.newUser= {
+    email:"",
+    password:"",
+    phone:""
+  };
+  $scope.register = function() {
+    var user = new Parse.User();
+    user.set("username", $scope.newUser.email);
+    user.set("password", $scope.newUser.password);
+    user.set("email", $scope.newUser.email);
+    user.set("phone", $scope.newUser.phone);
+    user.signUp(null, {
+      success: function(user) {
+        $state.go("feed");
+        $rootScope.sessionUser=user;
+      },
+      error: function(user, error) {
+        alert("Error" + error.code + " " + error.message);
+      }
+    });
+  }
+
+  $scope.login = function() {
+    Parse.User.logIn($scope.loginUser.email, $scope.loginUser.password, {
+      success: function(user) {
+        // Do stuff after successful login.
+        $state.go("feed");
+        $rootScope.sessionUser=user;
+      },
+      error: function(user, error) {
+        // The login failed. Check error to see why.
+      }
+    });
+  }
+});
+
 atnowApp.config(
 
         function ($stateProvider, $urlRouterProvider, $provide, $controllerProvider) {
@@ -134,7 +175,6 @@ atnowApp.config(
                         var query = new Parse.Query(Task);
                         return query.find().then(
                           function(results) {
-                            console.log(results);
                             return results;
                           },
                           function(error) {
@@ -163,12 +203,34 @@ atnowApp.config(
                     url: "/task/:taskId",
                     controller: 'TaskController',
                     templateUrl: '/js/views/task/TaskPage.html'
+                })
+                .state('login', {
+                    url: "/login",
+                    controller: "LoginController",
+                    templateUrl: "/js/views/user/Login.html"
                 });
+
 
     });
 
-atnowApp.run(function($rootScope) {
+atnowApp.run(function($rootScope, $state, $log, $location) {
   $rootScope.sessionUser = Parse.User.current();
+ // Listen for state changes when using ui-router
+  $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
+    $log.log(toState.name);
+    //no need to redirect
+    if(toState.name ==="login"){
+      if($rootScope.sessionUser){
+        $location.url("/feed");
+      }
+      return;
+    }
+    if($rootScope.sessionUser){
+        $log.log("logged in fuck");
+        return;
+    }
+    $location.url("/login");
+  });
 });
 
 atnowApp.factory("User", function(){
@@ -274,4 +336,4 @@ atnowApp.factory("Task", function(){
     }
   });
   return Task;
-})
+});
