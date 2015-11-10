@@ -80,7 +80,8 @@ atnowApp.controller('LoginController', function($scope, $log, $state, $rootScope
   $scope.newUser= {
     email:"",
     password:"",
-    phone:""
+    phone:"",
+    fullName:""
   };
   $scope.register = function() {
     var user = new Parse.User();
@@ -88,6 +89,7 @@ atnowApp.controller('LoginController', function($scope, $log, $state, $rootScope
     user.set("password", $scope.newUser.password);
     user.set("email", $scope.newUser.email);
     user.set("phone", $scope.newUser.phone);
+    user.set("fullName", $scope.newUser.fullName);
     user.signUp(null, {
       success: function(user) {
         $rootScope.sessionUser=user;

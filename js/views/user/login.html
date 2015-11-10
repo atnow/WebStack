@@ -5,6 +5,10 @@
       <div class="row">
         <form data-ng-submit = "register()">
           <div class="form-group">
+            <label for="inputName">Full Name</label>
+            <input type="text" class="form-control" id="inputName" placeholder="Phil Hanlon" data-ng-model="newUser.fullName">
+          </div>
+          <div class="form-group">
             <label for="inputEmail">Valid .edu email</label>
             <input type="email" class="form-control" id="inputEmail" placeholder="phil.j.hanlon.77@dartmouth.edu" data-ng-model="newUser.email">
           </div>
