@@ -2,13 +2,13 @@
 
 <div class="row">
   <div class="col-md-11 col-md-offset-1">
-    <h2 data-ng-bind="taskpage.title"></h2>
+    <h2 data-ng-bind="task.get('title')"></h2>
     <div class="row">
       <div class="col-md-2">
         <strong>Category</strong>
       </div>
       <div class="col-md-10">
-        <span data-ng-bind="taskpage.category"></span>
+        <span data-ng-bind="task.category"></span>
       </div>
     </div>
     
@@ -17,7 +17,7 @@
         <strong>Location</strong>
       </div>
       <div class="col-md-10">
-        <span data-ng-bind="taskpage.taskLocation"></span>
+        <span data-ng-bind="task.taskLocation"></span>
       </div>
     </div>
     
@@ -26,7 +26,7 @@
         <strong>Payment</strong>
       </div>
       <div class="col-md-10">
-        $<span data-ng-bind="taskpage.price"></span>
+        $<span data-ng-bind="task.price"></span>
       </div>
     </div>
     
@@ -35,7 +35,7 @@
         <strong>Completed</strong>
       </div>
       <div class="col-md-10">
-        <span data-ng-bind="taskpage.completed"></span>
+        <span data-ng-bind="task.completed"></span>
       </div>
     </div>
     
@@ -44,7 +44,7 @@
         <strong>Description</strong>
       </div>
       <div class="col-md-10">
-        <span data-ng-bind="taskpage.description"></span>
+        <span data-ng-bind="task.description"></span>
       </div>
     </div>
     

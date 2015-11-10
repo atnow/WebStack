@@ -20,7 +20,7 @@
             <td data-ng-bind="task.category"></td>
 			      <td data-ng-bind="(task.createdAt | date: 'MM/dd/yyyy h:mma')"></td>
             <td data-ng-bind="(task.expiration | date: 'MM/dd/yyyy h:mma')"></td>
-            <td><a data-ng-href="#/task/{{task.taskId}}"><i class="glyphicon glyphicon-info-sign"></i></a></td>
+            <td><a data-ng-href="#/task/{{task.id}}"><i class="glyphicon glyphicon-info-sign"></i></a></td>
           </tr>
         </tbody>
         <tfoot>

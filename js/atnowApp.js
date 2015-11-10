@@ -1,10 +1,10 @@
 'use strict';
 var atnowApp = angular.module('atnowApp', ["ui.router", "ui.bootstrap", "smart-table", "ngAnimate"]);
 
-atnowApp.controller("TaskFeedController", function($scope, $location, Task, parseTasks) {
+atnowApp.controller("TaskFeedController", function($scope, $location, $log, Task, parseTasks) {
   $scope.safeTasks= parseTasks;
   $scope.displayedTasks=[].concat($scope.safeTasks);
-  $scope.itemsByPage=5;
+  $scope.itemsByPage=10;
   $scope.newTask = function() {
     $location.path("/newTask");
   }
@@ -48,14 +48,10 @@ atnowApp.controller('TaskFormController', function ($scope, $http, $location) {
   
 });
 
-atnowApp.controller("TaskController", function($scope, $routeParams, $location) {
+atnowApp.controller("TaskController", function($scope, $stateParams, $location, Task, taskDetail) {
 
-  gapi.client.atnow.tasks.get({id:$routeParams.taskId}).execute(
-      function(resp){
-       $scope.$apply( function(){
-       $scope.taskpage=resp || {};
-      });
-    });
+  $scope.task = taskDetail;
+  
 
   $scope.claimTask = function() {
   }
@@ -159,10 +155,25 @@ atnowApp.config(
                     controller: 'UserDetailController',
                     templateUrl: '/js/views/user/UserDetail.html'
                 })
-                .state('/task/:taskId', {
+                .state('taskDetail', {
                     url: "/task/:taskId",
                     controller: 'TaskController',
-                    templateUrl: '/js/views/task/TaskPage.html'
+                    templateUrl: '/js/views/task/TaskPage.html',
+                    resolve:{
+                      taskDetail:function(Task, $stateParams) {
+                        var query = new Parse.Query(Task);
+                        return query.get($stateParams.taskId).then({
+                          success: function(result) {
+                            console.log(result);
+                            return result;
+                          },
+                          error: function(error) {
+                            alert("Error: " + error.code + " " + error.message);
+                            return error;
+                          }
+                        });
+                      }
+                    }
                 })
                 .state('login', {
                     url: "/login",
