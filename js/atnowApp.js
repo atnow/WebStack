@@ -167,7 +167,7 @@ atnowApp.config(
 
     });
 
-atnowApp.run(funtion($rootScope) {
+atnowApp.run(function($rootScope) {
   $rootScope.sessionUser = Parse.User.current();
 });
 
