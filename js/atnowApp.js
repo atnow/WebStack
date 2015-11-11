@@ -10,11 +10,12 @@ atnowApp.controller("TaskFeedController", function($scope, $location, $log, Task
   }
 });
 
-atnowApp.controller('TaskFormController', function ($scope, $http, $location) {
+atnowApp.controller('TaskFormController', function ($scope, $http, $location, $rootScope) {
   
   $scope.newTask = {};
   $scope.newTask.title = '';
   $scope.newTask.description = '';
+  $scope.newTask.location = '';
   $scope.newTask.price;
   $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
   $scope.format = $scope.formats[0];
@@ -41,20 +42,24 @@ atnowApp.controller('TaskFormController', function ($scope, $http, $location) {
     var Task = Parse.Object.extend("Task");
     var task = new Task();
     task.save({title: $scope.newTask.title, description: $scope.newTask.description, 
-      price: $scope.newTask.price, expiration: $scope.expiration}).then(function(object) {
+      price: $scope.newTask.price, expiration: $scope.expiration, 
+      accepted: false, taskLocation: $scope.newTask.location,
+      completed: false, requester: $rootScope.sessionUser}).then(function(object) {
     });
     $location.path("/");
   }
   
 });
 
-atnowApp.controller("TaskController", function($scope, $stateParams, $location, Task, taskDetail) {
+atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope, $location, Task, taskDetail) {
 
   $scope.task = taskDetail;
   
-
-  $scope.claimTask = function() {
-  }
+  $scope.claimTask = function(){
+    $scope.task.set("accepter", $rootScope.sessionUser);
+    $scope.task.set("accepted", true);
+    $scope.task.save();
+  };
 });
 
 atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log, User){
@@ -129,6 +134,10 @@ atnowApp.config(
                     resolve:{
                       parseTasks: function(Task){
                         var query = new Parse.Query(Task);
+                        query.equalTo("accepted", false);
+                        query.equalTo("completed", false);
+                        console.log(new Date());
+                        query.greaterThan("expiration", new Date());
                         return query.find().then(
                           function(results) {
                             return results;
@@ -271,6 +280,38 @@ atnowApp.factory("Task", function(){
   Object.defineProperty(Task.prototype, "title", {
       get: function() {
         return this.get("title");
+      },
+      set: function(val) {
+        this.set(title, val);
+      }
+  });
+  Object.defineProperty(Task.prototype, "accepter", {
+      get: function() {
+        return this.get("accepter");
+      },
+      set: function(val) {
+        this.set(title, val);
+      }
+  });
+  Object.defineProperty(Task.prototype, "accepted", {
+      get: function() {
+        return this.get("accepted");
+      },
+      set: function(val) {
+        this.set(title, val);
+      }
+  });
+  Object.defineProperty(Task.prototype, "completed", {
+      get: function() {
+        return this.get("completed");
+      },
+      set: function(val) {
+        this.set(title, val);
+      }
+  });
+  Object.defineProperty(Task.prototype, "location", {
+      get: function() {
+        return this.get("taskLocation");
       },
       set: function(val) {
         this.set(title, val);

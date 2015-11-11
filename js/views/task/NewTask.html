@@ -5,6 +5,7 @@
       Title:<div><input type="text" placeholder="Title" class="form-control" data-ng-model="newTask.title"/></div>
       Description:<div><input class="form-control" type="text" placeholder="Description" data-ng-model="newTask.description"/></div>
       Price:<div><input type="number" min="0" class="form-control" data-ng-model="newTask.price"/></div>
+      Location:<div><input type="text" class="form-control" data-ng-model="newTask.location"/></div>
       Expiration:<div>
               			<input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="mydate" is-open="status.opened" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
               			<span class="input-group-btn">
