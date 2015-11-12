@@ -10,15 +10,16 @@ atnowApp.controller("TaskTableController", function($scope, Task){
   $scope.itemsByPage=5;
 });
 
-
 atnowApp.controller('TaskFormController', function ($scope, $http, $state, $rootScope) {
   
   $scope.newTask = {};
   $scope.newTask.title = '';
   $scope.newTask.description = '';
+  $scope.newTask.location = '';
   $scope.newTask.price;
   $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
   $scope.format = $scope.formats[0];
+  //calendar
   $scope.status ={
     opened: false
   };
@@ -31,7 +32,7 @@ atnowApp.controller('TaskFormController', function ($scope, $http, $state, $root
   $scope.expiration = new Date();
 
   $scope.open = function(){
-    $scope.status.opened = true;
+    $scope.status.opened = true;  
   };
   
   $scope.commitTask = function() {
@@ -42,26 +43,29 @@ atnowApp.controller('TaskFormController', function ($scope, $http, $state, $root
     var Task = Parse.Object.extend("Task");
     var task = new Task();
     task.save({title: $scope.newTask.title, description: $scope.newTask.description, 
-      price: $scope.newTask.price, expiration: $scope.expiration, requester: $rootScope.sessionUser}).then(function(object) {
+      price: $scope.newTask.price, expiration: $scope.expiration, 
+      accepted: false, taskLocation: $scope.newTask.location,
+      completed: false, requester: $rootScope.sessionUser}).then(function(object) {
     });
     $state.go("feed");
   }
   
 });
 
-atnowApp.controller("TaskController", function($scope, $stateParams, $location, Task, taskDetail) {
+atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope, $location, Task, taskDetail) {
 
   $scope.task = taskDetail;
   
-
-  $scope.claimTask = function() {
-  }
+  $scope.claimTask = function(){
+    $scope.task.set("accepter", $rootScope.sessionUser);
+    $scope.task.set("accepted", true);
+    $scope.task.save();
+  };
 });
 
-atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log, User, userTasks){
-  $scope.viewUser = $rootScope.sessionUser;
-  $log.log($rootScope.sessionUser);
-  $scope.safeTasks = userTasks;
+atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log, User, $stateParams, Task, userTasks, thisUser){
+  $scope.viewUser = thisUser;
+  $scope.safeTasks= userTasks;
 });
 
 
@@ -131,6 +135,10 @@ atnowApp.config(
                     resolve:{
                       allTasks: function(Task){
                         var query = new Parse.Query(Task);
+                        query.equalTo("accepted", false);
+                        query.equalTo("completed", false);
+                        console.log(new Date());
+                        query.greaterThan("expiration", new Date());
                         return query.find().then(
                           function(results) {
                             return results;
@@ -153,18 +161,40 @@ atnowApp.config(
                     templateUrl: '/js/views/user/NewUser.html'
                 })
                 .state('dashboard', {
-                    url: "/dashboard",
+                    url: "/dashboard/:userId",
                     controller: 'UserDetailController',
                     templateUrl: '/js/views/user/UserDetail.html',
                     resolve:{
-                      userTasks: function(Task){
-                        var query = new Parse.Query(Task);
-                        return query.find().then(
-                          function(results) {
-                            return results;
+                      userTasks: function(Task, User, $stateParams){
+                        var query = new Parse.Query(User);
+                        return query.get($stateParams.userId).then(
+                          function(result){
+                            var accepterQuery = new Parse.Query(Task);
+                            accepterQuery.equalTo("accepter", result);
+                            var requesterQuery = new Parse.Query(Task);
+                            requesterQuery.equalTo("requester", result);
+                            var mainQuery = Parse.Query.or(accepterQuery, requesterQuery);
+                            return mainQuery.find().then(
+                              function(results) {
+                                return results;
+                              },
+                              function(error) {
+                                alert("Error: " + error.code + " " + error.message);
+                                return error;
+                              }); 
                           },
-                          function(error) {
-                            alert("Error: " + error.code + " " + error.message);
+                          function(error){
+                            console.log(error.message);
+                          }
+                        );
+                      },
+                      thisUser: function(User, $stateParams){
+                        var query = new Parse.Query(User);
+                        return query.get($stateParams.userId).then(
+                          function(result){
+                            return result;
+                          },
+                          function(error){
                             return error;
                           });
                       }
@@ -286,6 +316,38 @@ atnowApp.factory("Task", function(){
   Object.defineProperty(Task.prototype, "title", {
       get: function() {
         return this.get("title");
+      },
+      set: function(val) {
+        this.set(title, val);
+      }
+  });
+  Object.defineProperty(Task.prototype, "accepter", {
+      get: function() {
+        return this.get("accepter");
+      },
+      set: function(val) {
+        this.set(title, val);
+      }
+  });
+  Object.defineProperty(Task.prototype, "accepted", {
+      get: function() {
+        return this.get("accepted");
+      },
+      set: function(val) {
+        this.set(title, val);
+      }
+  });
+  Object.defineProperty(Task.prototype, "completed", {
+      get: function() {
+        return this.get("completed");
+      },
+      set: function(val) {
+        this.set(title, val);
+      }
+  });
+  Object.defineProperty(Task.prototype, "location", {
+      get: function() {
+        return this.get("taskLocation");
       },
       set: function(val) {
         this.set(title, val);

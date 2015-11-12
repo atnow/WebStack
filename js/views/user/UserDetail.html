@@ -38,7 +38,7 @@
             <tr>
               <th data-st-sort="title" class="table-header"><span>Task</span></th>
               <th data-st-sort="price" class="table-header"><span>Price</span></th>
-              <th data-st-sort="category" class="table-header"><span>Category</span></th>
+              <!--<th data-st-sort="category" class="table-header"><span>Category</span></th>-->
               <th data-st-sort="timeRequested" class="table-header"><span>Post time</span></th>
               <th data-st-sort="expiration" class="table-header"><span>Expiration</span></th>
               <th>Link</th>
@@ -48,10 +48,10 @@
             <tr data-ng-repeat="task in displayedTasks">
               <td data-ng-bind="task.title"></td>
               <td data-ng-bind="task.price"></td>
-              <td data-ng-bind="task.category"></td>
+              <!--<td data-ng-bind="task.category"></td>-->
               <td data-ng-bind="(task.createdAt | date: 'MM/dd/yyyy h:mma')"></td>
               <td data-ng-bind="(task.expiration | date: 'MM/dd/yyyy h:mma')"></td>
-              <td><a data-ng-href="#/task/{{task.taskId}}"><i class="glyphicon glyphicon-info-sign"></i></a></td>
+              <td><a data-ng-href="#/task/{{task.id}}"><i class="glyphicon glyphicon-info-sign"></i></a></td>
             </tr>
           </tbody>
           <tfoot>
