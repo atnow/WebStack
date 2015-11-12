@@ -1,16 +1,16 @@
 'use strict';
 var atnowApp = angular.module('atnowApp', ["ui.router", "ui.bootstrap", "smart-table", "ngAnimate"]);
 
-atnowApp.controller("TaskFeedController", function($scope, $location, $log, Task, parseTasks) {
-  $scope.safeTasks= parseTasks;
-  $scope.displayedTasks=[].concat($scope.safeTasks);
-  $scope.itemsByPage=10;
-  $scope.newTask = function() {
-    $location.path("/newTask");
-  }
+atnowApp.controller("MainFeedController", function($scope, $location, Task, allTasks) {
+  $scope.safeTasks= allTasks;
 });
 
-atnowApp.controller('TaskFormController', function ($scope, $http, $location, $rootScope) {
+atnowApp.controller("TaskTableController", function($scope, Task){
+  $scope.displayedTasks=[].concat($scope.safeTasks);
+  $scope.itemsByPage=5;
+});
+
+atnowApp.controller('TaskFormController', function ($scope, $http, $state, $rootScope) {
   
   $scope.newTask = {};
   $scope.newTask.title = '';
@@ -19,6 +19,7 @@ atnowApp.controller('TaskFormController', function ($scope, $http, $location, $r
   $scope.newTask.price;
   $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
   $scope.format = $scope.formats[0];
+  //calendar
   $scope.status ={
     opened: false
   };
@@ -46,7 +47,8 @@ atnowApp.controller('TaskFormController', function ($scope, $http, $location, $r
       accepted: false, taskLocation: $scope.newTask.location,
       completed: false, requester: $rootScope.sessionUser}).then(function(object) {
     });
-    $location.path("/");
+    $state.go("feed");
+
   }
   
 });
@@ -62,9 +64,9 @@ atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope,
   };
 });
 
-atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log, User){
-  $scope.viewUser = $rootScope.sessionUser;
-  $log.log($rootScope.sessionUser);
+atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log, User, $stateParams, Task, userTasks, thisUser){
+  $scope.viewUser = thisUser;
+  $scope.safeTasks= userTasks;
 });
 
 
@@ -129,10 +131,10 @@ atnowApp.config(
             $stateProvider
                 .state('feed', {
                     url: "/feed",
-                    controller: 'TaskFeedController',   
-                    templateUrl: '/js/views/task/TaskFeed.html',
+                    controller: 'MainFeedController',   
+                    templateUrl: '/js/views/task/MainFeed.html',
                     resolve:{
-                      parseTasks: function(Task){
+                      allTasks: function(Task){
                         var query = new Parse.Query(Task);
                         query.equalTo("accepted", false);
                         query.equalTo("completed", false);
@@ -160,9 +162,44 @@ atnowApp.config(
                     templateUrl: '/js/views/user/NewUser.html'
                 })
                 .state('dashboard', {
-                    url: "/dashboard",
+                    url: "/dashboard/:userId",
                     controller: 'UserDetailController',
-                    templateUrl: '/js/views/user/UserDetail.html'
+                    templateUrl: '/js/views/user/UserDetail.html',
+                    resolve:{
+                      userTasks: function(Task, User, $stateParams){
+                        var query = new Parse.Query(User);
+                        return query.get($stateParams.userId).then(
+                          function(result){
+                            var accepterQuery = new Parse.Query(Task);
+                            accepterQuery.equalTo("accepter", result);
+                            var requesterQuery = new Parse.Query(Task);
+                            requesterQuery.equalTo("requester", result);
+                            var mainQuery = Parse.Query.or(accepterQuery, requesterQuery);
+                            return mainQuery.find().then(
+                              function(results) {
+                                return results;
+                              },
+                              function(error) {
+                                alert("Error: " + error.code + " " + error.message);
+                                return error;
+                              }); 
+                          },
+                          function(error){
+                            console.log(error.message);
+                          }
+                        );
+                      },
+                      thisUser: function(User, $stateParams){
+                        var query = new Parse.Query(User);
+                        return query.get($stateParams.userId).then(
+                          function(result){
+                            return result;
+                          },
+                          function(error){
+                            return error;
+                          });
+                      }
+                    }
                 })
                 .state('taskDetail', {
                     url: "/task/:taskId",

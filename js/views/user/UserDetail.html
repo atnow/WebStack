@@ -1,34 +1,67 @@
 <div class ="container">
-
-<div class="row">
-  <div class="col-md-11 col-md-offset-1">
-    <h2 data-ng-bind="viewUser.name"></h2>
-    <div class="row">
-      <div class="col-md-8">
-        <div class="row">
-          <div class="col-md-4">
-            <strong>Email</strong>
+  <div class="row">
+    <div class="col-md-11 col-md-offset-1">
+      <h2 data-ng-bind="viewUser.name"></h2>
+      <div class="row">
+        <div class="col-md-8">
+          <div class="row">
+            <div class="col-md-4">
+              <strong>Email</strong>
+            </div>
+            <div class="col-md-8">
+              <span data-ng-bind="viewUser.email"></span>
+            </div>
           </div>
-          <div class="col-md-8">
-            <span data-ng-bind="viewUser.email"></span>
+          
+          <div class="row">
+            <div class="col-md-4">
+              <strong>Phone Number</strong>
+            </div>
+            <div class="col-md-8">
+              <span data-ng-bind="viewUser.phone"></span>
+            </div>
           </div>
         </div>
-        
-        <div class="row">
-          <div class="col-md-4">
-            <strong>Phone Number</strong>
-          </div>
-          <div class="col-md-8">
-            <span data-ng-bind="viewUser.phone"></span>
-          </div>
+        <div class="col-md-4">
+          <span class="pull-right"><img data-ng-src="{{viewUser.profilePicture}}" class="user-image"></span>
         </div>
-        
-      </div>
-      <div class="col-md-4">
-        <span class="pull-right"><img data-ng-src="{{viewUser.profilePicture}}" class="user-image"></span>
       </div>
     </div>
   </div>
-</div>
-
+  <div class="container" data-ng-controller="TaskTableController">
+    <div class="row">
+      <h3>User's Tasks</h3>
+    </div>
+    <div class="row">
+      <table id="task-table" class="table table-striped" data-st-table="displayedTasks" data-st-safe-src="safeTasks">
+          <thead>
+            <tr>
+              <th data-st-sort="title" class="table-header"><span>Task</span></th>
+              <th data-st-sort="price" class="table-header"><span>Price</span></th>
+              <!--<th data-st-sort="category" class="table-header"><span>Category</span></th>-->
+              <th data-st-sort="timeRequested" class="table-header"><span>Post time</span></th>
+              <th data-st-sort="expiration" class="table-header"><span>Expiration</span></th>
+              <th>Link</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-ng-repeat="task in displayedTasks">
+              <td data-ng-bind="task.title"></td>
+              <td data-ng-bind="task.price"></td>
+              <!--<td data-ng-bind="task.category"></td>-->
+              <td data-ng-bind="(task.createdAt | date: 'MM/dd/yyyy h:mma')"></td>
+              <td data-ng-bind="(task.expiration | date: 'MM/dd/yyyy h:mma')"></td>
+              <td><a data-ng-href="#/task/{{task.id}}"><i class="glyphicon glyphicon-info-sign"></i></a></td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="5" class="text-center">
+                <div data-st-pagination="" data-st-items-by-page="itemsByPage" data-st-displayed-pages="7"></div>
+              </td>
+            </tr>  
+          </tfoot>
+      </table>
+    </div>
+  </div>
 </div>

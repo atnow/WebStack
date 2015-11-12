@@ -1,0 +1,36 @@
+<div class="container">
+  <div class="row"><h1>@Now</h1></div>
+  <div class="row"><a id="newTask" class="btn btn-primary" data-ng-href="#/newTask" value="New Task"><i class ="glyphicon glyphicon-plus"></i>            New Task</a></div>
+  <div class="row" data-ng-controller="TaskTableController">
+    <table id="task-table" class="table table-striped" data-st-table="displayedTasks" data-st-safe-src="safeTasks">
+        <thead>
+          <tr>
+            <th data-st-sort="title" class="table-header"><span>Task</span></th>
+            <th data-st-sort="price" class="table-header"><span>Price</span></th>
+            <!-- <th data-st-sort="category" class="table-header"><span>Category</span></th> -->
+		        <th data-st-sort="timeRequested" class="table-header"><span>Post time</span></th>
+            <th data-st-sort="expiration" class="table-header"><span>Expiration</span></th>
+            <th>Link</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-ng-repeat="task in displayedTasks">
+            <td data-ng-bind="task.title"></td>
+            <td data-ng-bind="task.price"></td>
+            <!-- <td data-ng-bind="task.category"></td> -->
+			      <td data-ng-bind="(task.createdAt | date: 'MM/dd/yyyy h:mma')"></td>
+            <td data-ng-bind="(task.expiration | date: 'MM/dd/yyyy h:mma')"></td>
+            <td><a data-ng-href="#/task/{{task.id}}"><i class="glyphicon glyphicon-info-sign"></i></a></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5" class="text-center">
+              <div data-st-pagination="" data-st-items-by-page="itemsByPage" data-st-displayed-pages="7"></div>
+            </td>
+          </tr>  
+        </tfoot>
+    </table>
+  </div>
+</div>
+
