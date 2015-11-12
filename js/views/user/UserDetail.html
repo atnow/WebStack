@@ -30,6 +30,12 @@
   </div>
   <div class="container" data-ng-controller="TaskTableController">
     <div class="row">
+      <div class="btn-group">
+          <label class="btn btn-primary" ng-model="current" uib-btn-radio="'Current'">Current</label>
+          <label class="btn btn-primary" ng-model="current" uib-btn-radio="'All'">All</label>
+      </div>
+    </div>
+    <div class="row">
       <h3>User's Tasks</h3>
     </div>
     <div class="row">

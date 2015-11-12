@@ -64,9 +64,30 @@ atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope,
   };
 });
 
-atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log, User, $stateParams, Task, userTasks, thisUser){
+atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log, User, $stateParams, Task, userTasks, thisUser, currentTasks){
   $scope.viewUser = thisUser;
   $scope.safeTasks= userTasks;
+  $scope.current = 'All';
+  $log.log(userTasks);
+  $log.log(currentTasks);
+  if(thisUser.id === $rootScope.sessionUser.id){
+    $log.log("current");
+    $scope.current = 'Current';
+    $scope.safeTasks = currentTasks;
+  }
+  $scope.$watch(
+    function() {return $scope.current;},
+    function(newValue, oldValue) {
+      if(newValue==='All'){
+        $log.log("if");
+        $scope.safeTasks=userTasks;
+      }
+      if(newValue==='Current'){
+        $log.log("else");
+        $scope.safeTasks=currentTasks;
+      }
+    }
+  );
 });
 
 
@@ -198,6 +219,26 @@ atnowApp.config(
                           function(error){
                             return error;
                           });
+                      },
+                      currentTasks: function(Task, User, $stateParams){
+                        var query = new Parse.Query(User);
+                        return query.get($stateParams.userId).then(
+                          function(result){
+                            var accepterQuery = new Parse.Query(Task);
+                            query.equalTo("completed", false);
+                            return query.find().then(
+                              function(results) {
+                                return results;
+                              },
+                              function(error) {
+                                alert("Error: " + error.code + " " + error.message);
+                                return error;
+                              }); 
+                          },
+                          function(error){
+                            console.log(error.message);
+                          }
+                        );
                       }
                     }
                 })
