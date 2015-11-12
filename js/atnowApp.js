@@ -53,9 +53,33 @@ atnowApp.controller('TaskFormController', function ($scope, $http, $state, $root
   
 });
 
-atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope, $location, Task, taskDetail) {
+atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope, $state, Task, taskDetail) {
 
   $scope.task = taskDetail;
+  $scope.completer = false;
+  if (taskDetail.accepted === true && (typeof taskDetail.accepter !== 'undefined' && taskDetail.accepter !== null) 
+    && taskDetail.accepter.get('id') === $rootScope.sessionUser.get('id')) {
+    $scope.completer = true;
+  }
+
+  $scope.isRequester = false;
+
+  if ((typeof taskDetail.requester !== 'undefined' && taskDetail.requester !== null) 
+    && taskDetail.requester.get('id') === $rootScope.sessionUser.get('id')) {
+    $scope.isRequester = true;
+  }
+
+  $scope.completeTask = function(){
+    $scope.task.set("completed", true);
+    $scope.task.save();
+  }
+
+  $scope.relinquishTask = function(){
+    $scope.task.set("accepter", null);
+    $scope.task.set("accepted", false);
+    $scope.task.save();
+    $state.go("feed");
+  }
   
   $scope.claimTask = function(){
     $scope.task.set("accepter", $rootScope.sessionUser);

@@ -59,7 +59,11 @@
 
     <div class="row">
       <div class="col-md-8 col-xs-8">
-        <div ng-if="task.accepted==false" class="pull-right">
+        <div ng-if="task.completed == false && completer == true" class="pull-right">
+          <button id="completeTask" class="btn btn-success" data-ng-click="completeTask()" value="Complete Task"><span>Complete Task</span></button>
+          <button id="relinquishTask" class="btn btn-danger" data-ng-click="relinquishTask()" value="Relinquish Task"><span>Relinquish Task</span></button>
+        </div>
+        <div ng-if="task.accepted == false && isRequester == false" class="pull-right">
           <button id="claimTask" class="btn btn-primary" data-ng-click="claimTask()" value="Claim Task"><span>Claim Task</span></button>
         </div>
       </div>
