@@ -1,16 +1,17 @@
 'use strict';
 var atnowApp = angular.module('atnowApp', ["ui.router", "ui.bootstrap", "smart-table", "ngAnimate"]);
 
-atnowApp.controller("TaskFeedController", function($scope, $location, $log, Task, parseTasks) {
-  $scope.safeTasks= parseTasks;
-  $scope.displayedTasks=[].concat($scope.safeTasks);
-  $scope.itemsByPage=10;
-  $scope.newTask = function() {
-    $location.path("/newTask");
-  }
+atnowApp.controller("MainFeedController", function($scope, $location, Task, allTasks) {
+  $scope.safeTasks= allTasks;
 });
 
-atnowApp.controller('TaskFormController', function ($scope, $http, $location) {
+atnowApp.controller("TaskTableController", function($scope, Task){
+  $scope.displayedTasks=[].concat($scope.safeTasks);
+  $scope.itemsByPage=5;
+});
+
+
+atnowApp.controller('TaskFormController', function ($scope, $http, $state, $rootScope) {
   
   $scope.newTask = {};
   $scope.newTask.title = '';
@@ -41,9 +42,9 @@ atnowApp.controller('TaskFormController', function ($scope, $http, $location) {
     var Task = Parse.Object.extend("Task");
     var task = new Task();
     task.save({title: $scope.newTask.title, description: $scope.newTask.description, 
-      price: $scope.newTask.price, expiration: $scope.expiration}).then(function(object) {
+      price: $scope.newTask.price, expiration: $scope.expiration, requester: $rootScope.sessionUser}).then(function(object) {
     });
-    $location.path("/");
+    $state.go("feed");
   }
   
 });
@@ -57,9 +58,10 @@ atnowApp.controller("TaskController", function($scope, $stateParams, $location, 
   }
 });
 
-atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log, User){
+atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log, User, userTasks){
   $scope.viewUser = $rootScope.sessionUser;
   $log.log($rootScope.sessionUser);
+  $scope.safeTasks = userTasks;
 });
 
 
@@ -124,10 +126,10 @@ atnowApp.config(
             $stateProvider
                 .state('feed', {
                     url: "/feed",
-                    controller: 'TaskFeedController',   
-                    templateUrl: '/js/views/task/TaskFeed.html',
+                    controller: 'MainFeedController',   
+                    templateUrl: '/js/views/task/MainFeed.html',
                     resolve:{
-                      parseTasks: function(Task){
+                      allTasks: function(Task){
                         var query = new Parse.Query(Task);
                         return query.find().then(
                           function(results) {
@@ -153,7 +155,20 @@ atnowApp.config(
                 .state('dashboard', {
                     url: "/dashboard",
                     controller: 'UserDetailController',
-                    templateUrl: '/js/views/user/UserDetail.html'
+                    templateUrl: '/js/views/user/UserDetail.html',
+                    resolve:{
+                      userTasks: function(Task){
+                        var query = new Parse.Query(Task);
+                        return query.find().then(
+                          function(results) {
+                            return results;
+                          },
+                          function(error) {
+                            alert("Error: " + error.code + " " + error.message);
+                            return error;
+                          });
+                      }
+                    }
                 })
                 .state('taskDetail', {
                     url: "/task/:taskId",
