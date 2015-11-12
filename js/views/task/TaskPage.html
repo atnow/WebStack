@@ -16,7 +16,7 @@
       <div class="col-md-1 col-xs-4">
         <strong>Location</strong>
       </div>
-      <div class="col-md-7 col-xs-6">
+      <div class="col-md-11 col-xs-8">
         <span data-ng-bind="task.location"></span>
       </div>
     </div>
@@ -25,7 +25,7 @@
       <div class="col-md-1 col-xs-4">
         <strong>Payment</strong>
       </div>
-      <div class="col-md-7 col-xs-6">
+      <div class="col-md-11 col-xs-8">
         $<span data-ng-bind="task.price"></span>
       </div>
     </div>
@@ -34,7 +34,7 @@
       <div class="col-md-1 col-xs-4">
         <strong>Completed</strong>
       </div>
-      <div class="col-md-7 col-xs-6">
+      <div class="col-md-11 col-xs-8">
         <span data-ng-bind="task.completed"></span>
       </div>
     </div>
@@ -43,7 +43,7 @@
       <div class="col-md-1 col-xs-4">
         <strong>Claimed</strong>
       </div>
-      <div class="col-md-7 col-xs-6">
+      <div class="col-md-11 col-xs-8">
         <span data-ng-bind="task.accepted"></span>
       </div>
     </div>
@@ -52,13 +52,13 @@
       <div class="col-md-1 col-xs-4">
         <strong>Description</strong>
       </div>
-      <div class="col-md-7 col-xs-6">
+      <div class="col-md-11 col-xs-8">
         <span data-ng-bind="task.description"></span>
       </div>
     </div>
 
     <div class="row">
-      <div class="col-md-8 col-xs-12">
+      <div class="col-md-8 col-xs-8">
         <div ng-if="task.accepted==false" class="pull-right">
           <button id="claimTask" class="btn btn-primary" data-ng-click="claimTask()" value="Claim Task"><span>Claim Task</span></button>
         </div>

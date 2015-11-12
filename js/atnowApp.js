@@ -32,7 +32,7 @@ atnowApp.controller('TaskFormController', function ($scope, $http, $state, $root
   $scope.expiration = new Date();
 
   $scope.open = function(){
-    $scope.status.opened = true;  
+    $scope.status.opened = true;
   };
   
   $scope.commitTask = function() {
@@ -66,6 +66,7 @@ atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope,
 atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log, User, $stateParams, Task, userTasks, thisUser){
   $scope.viewUser = thisUser;
   $scope.safeTasks= userTasks;
+
 });
 
 
