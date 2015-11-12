@@ -67,16 +67,21 @@ atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope,
 atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log, User, $stateParams, Task, userTasks, thisUser, currentTasks){
   $scope.viewUser = thisUser;
   $scope.safeTasks= userTasks;
-  $scope.current = 'All';
+  $scope.isUser = function(){
+    thisUser.id === $rootScope.sessionUser.id;
+  }
+  $scope.current = {
+    value: 'All'
+  };
   $log.log(userTasks);
   $log.log(currentTasks);
-  if(thisUser.id === $rootScope.sessionUser.id){
+  if($scope.isUser){
     $log.log("current");
-    $scope.current = 'Current';
+    $scope.current.value = 'Current';
     $scope.safeTasks = currentTasks;
   }
   $scope.$watch(
-    function() {return $scope.current;},
+    'current.value',
     function(newValue, oldValue) {
       if(newValue==='All'){
         $log.log("if");
@@ -225,8 +230,9 @@ atnowApp.config(
                         return query.get($stateParams.userId).then(
                           function(result){
                             var accepterQuery = new Parse.Query(Task);
-                            query.equalTo("completed", false);
-                            return query.find().then(
+                            accepterQuery.equalTo("completed", false);
+                            accepterQuery.equalTo("accepter", result);
+                            return accepterQuery.find().then(
                               function(results) {
                                 return results;
                               },
