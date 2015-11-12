@@ -48,6 +48,7 @@ atnowApp.controller('TaskFormController', function ($scope, $http, $state, $root
       completed: false, requester: $rootScope.sessionUser}).then(function(object) {
     });
     $state.go("feed");
+
   }
   
 });
@@ -66,7 +67,6 @@ atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope,
 atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log, User, $stateParams, Task, userTasks, thisUser){
   $scope.viewUser = thisUser;
   $scope.safeTasks= userTasks;
-
 });
 
 
