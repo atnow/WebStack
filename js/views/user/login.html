@@ -21,6 +21,7 @@
             <input type="tel" class="form-control" id="inputPhone" placeholder="(555) 555-5555" data-ng-model="newUser.phone">
           </div>
           <div>
+            <uib-alert data-ng-repeat="alert in registerAlerts" type="{{alert.type}}" close="closeRegisterAlert($index)" dismiss-on-timeout="2000">{{alert.msg}}</uib-alert>
             <button class="btn btn-primary" type="submit">Register</button>
           </div>          
         </form>
@@ -39,6 +40,7 @@
             <input type="password" class="form-control" id="loginPassword" placeholder="Password" data-ng-model="loginUser.password">
           </div>
           <div>
+            <uib-alert data-ng-repeat="alert in loginAlerts" type="{{alert.type}}" close="closeLoginAlert($index)" dismiss-on-timeout="2000">{{alert.msg}}</uib-alert>
             <button class="btn btn-primary" type="submit">Login</button>
           </div>
         </form>

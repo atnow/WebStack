@@ -91,19 +91,25 @@ atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope,
 atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log, User, $stateParams, Task, userTasks, thisUser, currentTasks){
   $scope.viewUser = thisUser;
   $scope.safeTasks= userTasks;
+  
   $scope.isUser = function(){
-    thisUser.id === $rootScope.sessionUser.id;
+    return thisUser.id === $rootScope.sessionUser.id;
   }
+
+  $scope.emptyTasks = function(){
+    return $scope.safeTasks.length === 0;
+  }
+
   $scope.current = {
     value: 'All'
   };
-  $log.log(userTasks);
-  $log.log(currentTasks);
-  if($scope.isUser){
+
+  if($scope.isUser()){
     $log.log("current");
     $scope.current.value = 'Current';
     $scope.safeTasks = currentTasks;
   }
+
   $scope.$watch(
     'current.value',
     function(newValue, oldValue) {
@@ -136,6 +142,17 @@ atnowApp.controller('LoginController', function($scope, $log, $state, $rootScope
     phone:"",
     fullName:""
   };
+  $scope.loginAlerts = [];
+  $scope.registerAlerts = [];
+
+  $scope.closeLoginAlert = function(index) {
+    $scope.loginAlerts.splice(index, 1);
+  };
+  
+  $scope.closeRegisterAlert = function(index) {
+    $scope.registerAlerts.splice(index, 1);
+  };
+
   $scope.register = function() {
     var user = new Parse.User();
     user.set("username", $scope.newUser.email);
@@ -149,7 +166,16 @@ atnowApp.controller('LoginController', function($scope, $log, $state, $rootScope
         $state.go("feed");
       },
       error: function(user, error) {
-        alert("Error" + error.code + " " + error.message);
+        if($scope.registerAlerts.length > 2){
+          $scope.splice(0, 1);
+        }
+        if(error.code === 202){
+          $scope.registerAlerts.push({type: "danger", msg: "An account already exists with this email!"});
+          $scope.$apply();
+        }
+        else{
+          alert(error.message);
+        }
       }
     });
   }
@@ -163,6 +189,13 @@ atnowApp.controller('LoginController', function($scope, $log, $state, $rootScope
       },
       error: function(user, error) {
         // The login failed. Check error to see why.
+        if($scope.loginAlerts.length > 2){
+          $scope.splice(0, 1);
+        }
+        if(error.code===101){
+        $scope.loginAlerts.push({type: "danger", msg: 'Incorrect email/password combo, try again!'});
+        $scope.$apply();
+        }
       }
     });
   }
@@ -188,7 +221,6 @@ atnowApp.config(
                         var query = new Parse.Query(Task);
                         query.equalTo("accepted", false);
                         query.equalTo("completed", false);
-                        console.log(new Date());
                         query.greaterThan("expiration", new Date());
                         return query.find().then(
                           function(results) {

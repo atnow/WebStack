@@ -29,7 +29,7 @@
     </div>
   </div>
   <div class="container" data-ng-controller="TaskTableController">
-    <div class="row" class="ng-cloak" data-ng-show="isUser">
+    <div class="row" class="ng-cloak" data-ng-show="isUser()">
       <div class="btn-group">
           <label class="btn btn-primary" ng-model="current.value" uib-btn-radio="'Current'">Current</label>
           <label class="btn btn-primary" ng-model="current.value" uib-btn-radio="'All'">All</label>
@@ -39,7 +39,7 @@
       <h3>User's Tasks</h3>
     </div>
     <div class="row">
-      <table id="task-table" class="table table-striped" data-st-table="displayedTasks" data-st-safe-src="safeTasks">
+      <table data-ng-if="!emptyTasks()" id="task-table" class="table table-striped" data-st-table="displayedTasks" data-st-safe-src="safeTasks">
           <thead>
             <tr>
               <th data-st-sort="title" class="table-header"><span>Task</span></th>
@@ -58,11 +58,11 @@
               <!--<td data-ng-bind="task.category"></td>-->
               <td data-ng-bind="(task.createdAt | date: 'MM/dd/yyyy h:mma')"></td>
               <td data-ng-bind="(task.expiration | date: 'MM/dd/yyyy h:mma')"></td>
-              <td style="text-align:center">
-                <i data-ng-if="task.completed == true" class="glyphicon glyphicon-ok" style="color:green"></i>
-                <i data-ng-if="task.completed == false" class="glyphicon glyphicon-remove" style="color:red"></i>
+              <td>
+                <i data-ng-if="task.completed == true" class="glyphicon glyphicon-ok" style="color:green; margin-left:30px"></i>
+                <i data-ng-if="task.completed == false" class="glyphicon glyphicon-remove" style="color:red; margin-left:30px"></i>
               </td>
-              <td style="text-align:center"><a data-ng-href="#/task/{{task.id}}"><i class="glyphicon glyphicon-info-sign"></i></a></td>
+              <td><a data-ng-href="#/task/{{task.id}}"><i class="glyphicon glyphicon-info-sign" style="margin-left:8px"></i></a></td>
             </tr>
           </tbody>
           <tfoot>
@@ -73,6 +73,7 @@
             </tr>  
           </tfoot>
       </table>
+      <h3 data-ng-if="emptyTasks()" style="color:grey">No tasks to display</h3>
     </div>
   </div>
 </div>
