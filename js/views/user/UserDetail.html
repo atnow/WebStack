@@ -20,6 +20,15 @@
               <span data-ng-bind="viewUser.phone"></span>
             </div>
           </div>
+          <div class="row">
+            <div class="col-md-3">
+              <strong>Rating</strong>
+            </div>
+            <div class="col-md-8">
+              <uib-rating ng-model="viewUser.rating.get('rating')" max="5" readonly="true" aria-labelledby="default-rating"></uib-rating>
+              (<span data-ng-bind="viewUser.rating.get('ratingCount')"></span>)
+            </div>
+          </div>
         </div>
         <div class="col-md-4">
           <span class="pull-right"><img data-ng-src="{{viewUser.profilePicture}}" class="user-image"></span>

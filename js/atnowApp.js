@@ -73,21 +73,49 @@ atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope,
   }
 
   $scope.completeTask = function(){
-    $scope.task.set("completed", true);
-    $scope.task.save();
+
+    var modalInstance = $uibModal.open({
+      animation: true,
+      templateUrl: '/js/views/task/TaskRating.html',
+      controller: 'TaskModalController',
+      size: 'sm',
+      resolve: {
+        reviewUser: function (User) {
+          var query = new Parse.Query(User);
+          query.include('rating');
+          return query.get($scope.task.requester.id).then({
+            success: function(result) {
+              console.log(result);
+              return result;
+            },
+            error: function(error) {
+              alert("Error: " + error.code + " " + error.message);
+              return error;
+            }
+          });
+        }
+      }
+    });
+
+    modalInstance.result.then(function () {
+      $scope.task.set("completed", true);
+      $scope.task.save();
+    });
   }
 
   $scope.relinquishTask = function(){
     $scope.task.set("accepter", null);
     $scope.task.set("accepted", false);
     $scope.task.save();
-    $state.go("feed");
+    $state.go('feed');
   }
   
   $scope.claimTask = function(){
     $scope.task.set("accepter", $rootScope.sessionUser);
     $scope.task.set("accepted", true);
     $scope.task.save();
+    // $state.go('feed');
+    $state.go('dashboard', {'userId': $rootScope.sessionUser.id});
   };
 
   $scope.confirmTask = function(){
@@ -259,12 +287,18 @@ atnowApp.controller('LoginController', function($scope, $log, $state, $rootScope
   };
 
   $scope.register = function() {
+    var Rating = Parse.Object.extend("Rating");
+    var rating = new Rating();
+    rating.set("rating", 0);
+    rating.set("ratingCount", 0);
+    rating.save();
     var user = new Parse.User();
     user.set("username", $scope.newUser.email);
     user.set("password", $scope.newUser.password);
     user.set("email", $scope.newUser.email);
     user.set("phone", $scope.newUser.phone);
     user.set("fullName", $scope.newUser.fullName);
+    user.set("rating", rating);
     user.signUp(null, {
       success: function(user) {
         $rootScope.sessionUser=user;
@@ -378,6 +412,7 @@ atnowApp.config(
                       },
                       thisUser: function(User, $stateParams){
                         var query = new Parse.Query(User);
+                        query.include('rating');
                         return query.get($stateParams.userId).then(
                           function(result){
                             return result;
@@ -437,6 +472,8 @@ atnowApp.config(
                     resolve:{
                       taskDetail:function(Task, $stateParams) {
                         var query = new Parse.Query(Task);
+                        query.include('requester');
+                        query.include('accepter');
                         return query.get($stateParams.taskId).then({
                           success: function(result) {
                             console.log(result);

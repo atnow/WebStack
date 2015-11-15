@@ -3,14 +3,28 @@
 <div class="row">
   <div class="col-md-10 col-md-offset-1">
     <div class="page-header row"><h1 data-ng-bind="task.title"></h1></div>
-    <!-- <div class="row">
-      <div class="col-md-1 col-xs-4">
-        <strong>Category</strong>
+
+    <div ng-show="task.accepted && isCompleter || isRequester">
+      <div class="row">
+        <div class="col-md-2 col-xs-4">
+          <strong>Task Requester</strong>
+        </div>
+        <div class="col-md-10 col-xs-8">
+          <a data-ng-href="#/dashboard/{{task.requester.id}}"><span data-ng-bind="task.requester.get('fullName')"></span></a>
+        </div>
       </div>
-      <div class="col-md-10 col-xs-8">
-        <span data-ng-bind="task.category"></span>
+    </div>
+
+    <div ng-show="task.accepted && (isRequester || isCompleter)">
+      <div class="row">
+        <div class="col-md-2 col-xs-4">
+          <strong>Task Completer</strong>
+        </div>
+        <div class="col-md-10 col-xs-8">
+          <a data-ng-href="#/dashboard/{{task.accepter.id}}"><span data-ng-bind="task.accepter.get('fullName')"></span></a>
+        </div>
       </div>
-    </div> -->
+    </div>
     
     <div class="row">
       <div class="col-md-2 col-xs-4">
