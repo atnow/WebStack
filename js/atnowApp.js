@@ -50,7 +50,7 @@ atnowApp.controller('TaskFormController', function ($scope, $http, $state, $root
     task.save({title: $scope.newTask.title, description: $scope.newTask.description, 
       price: $scope.newTask.price, expiration: $scope.expiration, 
       accepted: false, taskLocation: $scope.newTask.location,
-      completed: false, requester: $rootScope.sessionUser}).then(function(object) {
+      completed: false, requester: $rootScope.sessionUser, confirmed: false}).then(function(object) {
     });
     $state.go("feed");
 
@@ -58,19 +58,17 @@ atnowApp.controller('TaskFormController', function ($scope, $http, $state, $root
   
 });
 
-atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope, $state, Task, taskDetail) {
+atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope, $state, $uibModal, Task, taskDetail) {
 
   $scope.task = taskDetail;
-  $scope.completer = false;
-  if (taskDetail.accepted === true && (typeof taskDetail.accepter !== 'undefined' && taskDetail.accepter !== null) 
-    && taskDetail.accepter.get('id') === $rootScope.sessionUser.get('id')) {
-    $scope.completer = true;
+  $scope.isCompleter = false;
+  if (taskDetail.accepted && (typeof taskDetail.accepter !== 'undefined' && taskDetail.accepter !== null) 
+    && taskDetail.accepter.id === $rootScope.sessionUser.id) {
+    $scope.isCompleter = true;
   }
 
   $scope.isRequester = false;
-
-  if ((typeof taskDetail.requester !== 'undefined' && taskDetail.requester !== null) 
-    && taskDetail.requester.get('id') === $rootScope.sessionUser.get('id')) {
+  if (taskDetail.requester.id === $rootScope.sessionUser.id) {
     $scope.isRequester = true;
   }
 
@@ -90,6 +88,111 @@ atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope,
     $scope.task.set("accepter", $rootScope.sessionUser);
     $scope.task.set("accepted", true);
     $scope.task.save();
+  };
+
+  $scope.confirmTask = function(){
+    var modalInstance = $uibModal.open({
+      animation: true,
+      templateUrl: '/js/views/task/TaskRating.html',
+      controller: 'TaskModalController',
+      size: 'sm',
+      resolve: {
+        reviewUser: function (User) {
+          var query = new Parse.Query(User);
+          query.include('rating');
+          return query.get($scope.task.accepter.id).then({
+            success: function(result) {
+              console.log(result);
+              return result;
+            },
+            error: function(error) {
+              alert("Error: " + error.code + " " + error.message);
+              return error;
+            }
+          });
+        }
+      }
+    });
+
+    modalInstance.result.then(function () {
+      $scope.task.set("confirmed", true);
+      $scope.task.save();
+    });
+  };
+
+  $scope.reportUser = function() {
+    var modalInstance = $uibModal.open({
+      animation: true,
+      templateUrl: '/js/views/task/Report.html',
+      controller: 'TaskModalController',
+      resolve: {
+        reviewUser: function (User) {
+          var query = new Parse.Query(User);
+          return query.get($scope.task.accepter.id).then({
+            success: function(result) {
+              console.log(result);
+              return result;
+            },
+            error: function(error) {
+              alert("Error: " + error.code + " " + error.message);
+              return error;
+            }
+          });
+        }
+      }
+    });
+
+    modalInstance.result.then(function () {
+      $scope.task.set("accepter", null);
+      $scope.task.set("accepted", false);
+      $scope.task.set("completed", false);
+      $scope.task.save();
+    });
+  };
+
+});
+
+atnowApp.controller('TaskModalController', function ($scope, $uibModalInstance, $rootScope, reviewUser){
+  $scope.reportInformation = "";
+  $scope.username = reviewUser.get('fullName');
+  $scope.rate = 5;
+  $scope.max = 5;
+  $scope.isReadonly = false;
+
+  $scope.hoveringOver = function(value) {
+    $scope.overStar = value;
+    $scope.ratingType = '';
+    if (value === 1) {
+      $scope.ratingType = 'Horrible';
+    } else if (value === 2) {
+      $scope.ratingType = 'Bad';
+    } else if (value === 3) {
+      $scope.ratingType = 'OK';
+    } else if (value === 4) {
+      $scope.ratingType = 'Good';
+    } else if (value === 5) {
+      $scope.ratingType = 'Great';
+    }
+  };
+
+  $scope.report = function() {
+    var Report = Parse.Object.extend("Report");
+    var report = new Report();
+    report.save({offender: reviewUser, detail: $scope.reportInformation, reporter:$rootScope.sessionUser, dealtWith: false});
+    $uibModalInstance.close();
+  };
+
+  $scope.rateUser = function() {
+    var ratingCount = reviewUser.rating.get('ratingCount') + 1;
+    var averageRating = ((reviewUser.rating.get('rating') * reviewUser.rating.get('ratingCount')) + $scope.rate)/(ratingCount);
+    reviewUser.rating.set("rating", averageRating);
+    reviewUser.rating.set("ratingCount", ratingCount);
+    reviewUser.rating.save();
+    $uibModalInstance.close();
+  };
+
+  $scope.cancel = function() {
+    $uibModalInstance.dismiss('cancel');
   };
 });
 
@@ -377,6 +480,27 @@ atnowApp.run(function($rootScope, $state, $log, $location, User) {
   });
 });
 
+atnowApp.factory("Rating", function(){
+  var Rating = Parse.User.extend("Rating");
+  Object.defineProperty(User.prototype, "rating", {
+    get: function() {
+      return this.get("rating");
+    },
+    set: function(val) {
+      this.set(name, val);
+    }
+  });
+  Object.defineProperty(User.prototype, "ratingCount", {
+    get: function() {
+      return this.get("ratingCount");
+    },
+    set: function(val) {
+      this.set(email, val);
+    }
+  });
+  return Rating;
+});
+
 atnowApp.factory("User", function(){
   var User = Parse.User.extend("User");
   Object.defineProperty(User.prototype, "name", {
@@ -411,14 +535,6 @@ atnowApp.factory("User", function(){
       this.set(rating, val);
     }
   });
-  Object.defineProperty(User.prototype, "ratingCount", {
-    get: function() {
-      return this.get("ratingCount");
-    },
-    set: function(val) {
-      this.set(ratingCount, val);
-    }
-  });
   Object.defineProperty(User.prototype, "tasksClaimed", {
     get: function() {
       return this.get("tasksClaimed");
@@ -448,6 +564,14 @@ atnowApp.factory("Task", function(){
         this.set(title, val);
       }
   });
+  Object.defineProperty(Task.prototype, "requester", {
+      get: function() {
+        return this.get("requester");
+      },
+      set: function(val) {
+        this.set(title, val);
+      }
+  });
   Object.defineProperty(Task.prototype, "accepter", {
       get: function() {
         return this.get("accepter");
@@ -467,6 +591,14 @@ atnowApp.factory("Task", function(){
   Object.defineProperty(Task.prototype, "completed", {
       get: function() {
         return this.get("completed");
+      },
+      set: function(val) {
+        this.set(title, val);
+      }
+  });
+  Object.defineProperty(Task.prototype, "confirmed", {
+      get: function() {
+        return this.get("confirmed");
       },
       set: function(val) {
         this.set(title, val);

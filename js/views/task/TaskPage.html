@@ -29,22 +29,34 @@
         $<span data-ng-bind="task.price"></span>
       </div>
     </div>
-    
-    <div class="row">
-      <div class="col-md-2 col-xs-4">
-        <strong>Completed</strong>
-      </div>
-      <div class="col-md-10 col-xs-8">
-        <span data-ng-bind="task.completed"></span>
-      </div>
-    </div>
 
     <div class="row">
       <div class="col-md-2 col-xs-4">
         <strong>Claimed</strong>
       </div>
       <div class="col-md-10 col-xs-8">
-        <span data-ng-bind="task.accepted"></span>
+        <i data-ng-if="task.accepted == true" class="glyphicon glyphicon-ok" style="color:green"></i>
+        <i data-ng-if="task.accepted == false" class="glyphicon glyphicon-remove" style="color:red"></i>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-2 col-xs-4">
+        <strong>Completed</strong>
+      </div>
+      <div class="col-md-10 col-xs-8">
+        <i data-ng-if="task.completed == true" class="glyphicon glyphicon-ok" style="color:green"></i>
+        <i data-ng-if="task.completed == false" class="glyphicon glyphicon-remove" style="color:red"></i>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-2 col-xs-4">
+        <strong>Confirmed</strong>
+      </div>
+      <div class="col-md-10 col-xs-8">
+        <i data-ng-if="task.confirmed == true" class="glyphicon glyphicon-ok" style="color:green"></i>
+        <i data-ng-if="task.confirmed == false" class="glyphicon glyphicon-remove" style="color:red"></i>
       </div>
     </div>
     
@@ -59,12 +71,16 @@
 
     <div class="row">
       <div class="col-md-8 col-xs-8">
-        <div ng-if="task.completed == false && completer == true">
+        <div ng-if="task.completed == false && isCompleter">
           <button id="completeTask" class="btn btn-success" data-ng-click="completeTask()" value="Complete Task"><span>Complete Task</span></button>
           <button id="relinquishTask" class="btn btn-danger" data-ng-click="relinquishTask()" value="Relinquish Task"><span>Relinquish Task</span></button>
         </div>
         <div ng-if="task.accepted == false && isRequester == false">
           <button id="claimTask" class="btn btn-primary" data-ng-click="claimTask()" value="Claim Task"><span>Claim Task</span></button>
+        </div>
+        <div ng-if="task.completed == true && task.confirmed == false && isRequester == true">
+          <button id="confirmTask" class="btn btn-success" data-ng-click="confirmTask()" value="Confirm Task"><span>Task Was Completed</span></button>
+          <button id="Report" class="btn btn-danger" data-ng-click="reportUser()" value="Report User"><span>Task Was Not Finished</span></button>
         </div>
       </div>
     </div>
