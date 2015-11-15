@@ -2,7 +2,7 @@
   <div class="row"><h1>@Now</h1></div>
   <div class="row"><button id="newTask" class="btn btn-primary" data-ng-click="newTask()" value="New Task"><i class ="glyphicon glyphicon-plus"></i>            New Task</button></div>
   <div class="row">
-    <table id="task-table" class="table table-striped" data-st-table="displayedTasks" data-st-safe-src="safeTasks">
+    <table data-ng-if="!emptyTasks()" id="task-table" class="table table-striped" data-st-table="displayedTasks" data-st-safe-src="safeTasks">
         <thead>
           <tr>
             <th data-st-sort="title" class="table-header"><span>Task</span></th>
@@ -31,6 +31,7 @@
           </tr>  
         </tfoot>
     </table>
+    <h3 data-ng-if="emptyTasks()" style="color:grey">No tasks to display</h3>
   </div>
 </div>
 

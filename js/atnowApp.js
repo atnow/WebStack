@@ -8,6 +8,11 @@ atnowApp.controller("MainFeedController", function($scope, $location, Task, allT
 atnowApp.controller("TaskTableController", function($scope, Task){
   $scope.displayedTasks=[].concat($scope.safeTasks);
   $scope.itemsByPage=5;
+
+  $scope.emptyTasks = function(){
+    return $scope.safeTasks.length === 0;
+  }
+
 });
 
 atnowApp.controller('TaskFormController', function ($scope, $http, $state, $rootScope) {
@@ -88,7 +93,7 @@ atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope,
   };
 });
 
-atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log, User, $stateParams, Task, userTasks, thisUser, currentTasks){
+atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log, User, $stateParams, Task, userTasks, thisUser, todoTasks, pendingTasks){
   $scope.viewUser = thisUser;
   $scope.safeTasks= userTasks;
   
@@ -96,30 +101,27 @@ atnowApp.controller('UserDetailController', function($rootScope, $scope, $locati
     return thisUser.id === $rootScope.sessionUser.id;
   }
 
-  $scope.emptyTasks = function(){
-    return $scope.safeTasks.length === 0;
-  }
-
   $scope.current = {
     value: 'All'
   };
 
   if($scope.isUser()){
-    $log.log("current");
-    $scope.current.value = 'Current';
-    $scope.safeTasks = currentTasks;
+    $log.log("To-do");
+    $scope.current.value = 'To-do';
+    $scope.safeTasks = todoTasks;
   }
 
   $scope.$watch(
     'current.value',
     function(newValue, oldValue) {
       if(newValue==='All'){
-        $log.log("if");
         $scope.safeTasks=userTasks;
       }
-      if(newValue==='Current'){
-        $log.log("else");
-        $scope.safeTasks=currentTasks;
+      if(newValue==='To-do'){
+        $scope.safeTasks=todoTasks;
+      }
+      if(newValue==='Pending'){
+        $scope.safeTasks=pendingTasks;
       }
     }
   );
@@ -281,13 +283,34 @@ atnowApp.config(
                             return error;
                           });
                       },
-                      currentTasks: function(Task, User, $stateParams){
+                      todoTasks: function(Task, User, $stateParams){
                         var query = new Parse.Query(User);
                         return query.get($stateParams.userId).then(
                           function(result){
                             var accepterQuery = new Parse.Query(Task);
                             accepterQuery.equalTo("completed", false);
                             accepterQuery.equalTo("accepter", result);
+                            return accepterQuery.find().then(
+                              function(results) {
+                                return results;
+                              },
+                              function(error) {
+                                alert("Error: " + error.code + " " + error.message);
+                                return error;
+                              }); 
+                          },
+                          function(error){
+                            console.log(error.message);
+                          }
+                        );
+                      },
+                      pendingTasks: function(Task, User, $stateParams){
+                        var query = new Parse.Query(User);
+                        return query.get($stateParams.userId).then(
+                          function(result){
+                            var accepterQuery = new Parse.Query(Task);
+                            accepterQuery.equalTo("confirmed", false);
+                            accepterQuery.equalTo("requester", result);
                             return accepterQuery.find().then(
                               function(results) {
                                 return results;
