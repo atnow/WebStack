@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-md-10 col-md-offset-1">
       <div class="row page-header"><h1>Available tasks</h1></div>
-      <div class="row"><a id="newTask" class="btn btn-primary" data-ng-href="#/newTask" value="New Task"><i class ="glyphicon glyphicon-plus"></i>            New Task</a></div>
+      <div class="row"><a id="newTask" class="btn btn-primary" data-ng-href="#/app/newTask" value="New Task"><i class ="glyphicon glyphicon-plus"></i>            New Task</a></div>
       <div class="row" data-ng-controller="TaskTableController">
         <table id="task-table" data-ng-if="!emptyTasks()" class="table table-striped" data-st-table="displayedTasks" data-st-safe-src="safeTasks">
             <thead>
@@ -22,7 +22,7 @@
                 <!-- <td data-ng-bind="task.category"></td> -->
     			      <td data-ng-bind="(task.createdAt | date: 'MM/dd/yyyy h:mma')"></td>
                 <td data-ng-bind="(task.expiration | date: 'MM/dd/yyyy h:mma')"></td>
-                <td><a data-ng-href="#/task/{{task.id}}"><i class="glyphicon glyphicon-info-sign"></i></a></td>
+                <td><a data-ng-href="#/app/task/{{task.id}}"><i class="glyphicon glyphicon-info-sign" style="margin-left:8px"></i></a></td>
               </tr>
             </tbody>
             <tfoot>

@@ -1,8 +1,9 @@
 'use strict';
 var atnowApp = angular.module('atnowApp', ["ui.router", "ui.bootstrap", "smart-table", "ngAnimate"]);
 
-atnowApp.controller("MainFeedController", function($scope, $location, Task, allTasks) {
+atnowApp.controller("MainFeedController", function($scope, $location, Task, allTasks, myNotifications, User) {
   $scope.safeTasks= allTasks;
+  console.log(myNotifications);
 });
 
 atnowApp.controller("TaskTableController", function($scope, Task){
@@ -52,14 +53,14 @@ atnowApp.controller('TaskFormController', function ($scope, $http, $state, $root
       accepted: false, taskLocation: $scope.newTask.location,
       completed: false, requester: $rootScope.sessionUser, confirmed: false}).then(function(object) {
     });
-    $state.go("feed");
+    $state.go("app.feed");
 
   }
   
 });
 
-atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope, $state, $uibModal, Task, taskDetail) {
 
+atnowApp.controller("TaskController", function($log, $scope, $stateParams, $rootScope, $state, $uibModal, Task, taskDetail, User) {
   $scope.task = taskDetail;
   $scope.isCompleter = false;
   if (taskDetail.accepted && (typeof taskDetail.accepter !== 'undefined' && taskDetail.accepter !== null) 
@@ -99,6 +100,9 @@ atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope,
 
     modalInstance.result.then(function () {
       $scope.task.set("completed", true);
+      var Notification = Parse.Object.extend("Notification");
+      var notification = new Notification();
+      notification.save({type:"completed", task: $scope.task, isRead: false, owner: $scope.task.get("requester")});   
       $scope.task.save();
     });
   }
@@ -107,12 +111,15 @@ atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope,
     $scope.task.set("accepter", null);
     $scope.task.set("accepted", false);
     $scope.task.save();
-    $state.go('feed');
+    $state.go("app.feed");
   }
   
   $scope.claimTask = function(){
     $scope.task.set("accepter", $rootScope.sessionUser);
-    $scope.task.set("accepted", true);
+    $scope.task.set("accepted", true); 
+    var Notification = Parse.Object.extend("Notification");
+    var notification = new Notification();
+    notification.save({type:"claimed", task: $scope.task, isRead: false, owner: $scope.task.get("requester")});    
     $scope.task.save();
     // $state.go('feed');
     $state.go('dashboard', {'userId': $rootScope.sessionUser.id});
@@ -144,6 +151,9 @@ atnowApp.controller("TaskController", function($scope, $stateParams, $rootScope,
 
     modalInstance.result.then(function () {
       $scope.task.set("confirmed", true);
+      var Notification = Parse.Object.extend("Notification");
+      var notification = new Notification();
+      notification.save({type:"confirmed", task: $scope.task, isRead: false, owner: reviewUser});
       $scope.task.save();
     });
   };
@@ -229,6 +239,8 @@ atnowApp.controller('UserDetailController', function($rootScope, $scope, $locati
   $scope.safeTasks= userTasks;
   
   $scope.isUser = function(){
+    $log.log(thisUser);
+    $log.log($rootScope.sessionUser);
     return thisUser.id === $rootScope.sessionUser.id;
   }
 
@@ -247,6 +259,7 @@ atnowApp.controller('UserDetailController', function($rootScope, $scope, $locati
     function(newValue, oldValue) {
       if(newValue==='All'){
         $scope.safeTasks=userTasks;
+        $log.log($scope.safeTasks);
       }
       if(newValue==='To-do'){
         $scope.safeTasks=todoTasks;
@@ -259,11 +272,17 @@ atnowApp.controller('UserDetailController', function($rootScope, $scope, $locati
 });
 
 
-atnowApp.controller('NavBarController', function($scope, $state, $rootScope, $log, $location) {
+atnowApp.controller('NavBarController', function($scope, $state, $rootScope, $log, $location, myNotifications) {
   $scope.signOut = function(){
     Parse.User.logOut();
     $rootScope.sessionUser=Parse.User.current();
     $location.url("/login");
+  }
+
+  $scope.userNotifications = myNotifications;
+  
+  $scope.noNotifications = function(){
+    return myNotifications && myNotifications.length===0;
   }
 });
 
@@ -273,7 +292,7 @@ atnowApp.controller('LoginController', function($scope, $log, $state, $rootScope
     email:"",
     password:"",
     phone:"",
-    fullName:""
+    fullName:"",
   };
   $scope.loginAlerts = [];
   $scope.registerAlerts = [];
@@ -302,7 +321,7 @@ atnowApp.controller('LoginController', function($scope, $log, $state, $rootScope
     user.signUp(null, {
       success: function(user) {
         $rootScope.sessionUser=user;
-        $state.go("feed");
+        $state.go("app.feed");
       },
       error: function(user, error) {
         if($scope.registerAlerts.length > 2){
@@ -324,7 +343,7 @@ atnowApp.controller('LoginController', function($scope, $log, $state, $rootScope
       success: function(user) {
         // Do stuff after successful login.
         $rootScope.sessionUser=user;
-        $state.go("feed");
+        $state.go("app.feed");
       },
       error: function(user, error) {
         // The login failed. Check error to see why.
@@ -348,13 +367,27 @@ atnowApp.config(
 
             $urlRouterProvider.otherwise(function($injector){
               var $state = $injector.get("$state");
-              $state.go("feed");
+              $state.go("app.feed");
             });
             $stateProvider
-                .state('feed', {
+                .state('app', {
+                  url:"/app",
+                  abstract:true,
+
+                  resolve: {
+                    notifications: function(User){
+                        var Notification = Parse.Object.extend("Notification");
+                        var query = new Parse.Query(Notification);
+                        query.equalTo("owner", Parse.User.current());
+                        query.include(["task.accepter"]);
+                        return query.find().then(function(result){
+                          return result;
+                        });
+                    }
+                  }
+                })
+                .state('app.feed', {
                     url: "/feed",
-                    controller: 'MainFeedController',   
-                    templateUrl: '/js/views/task/MainFeed.html',
                     resolve:{
                       allTasks: function(Task){
                         var query = new Parse.Query(Task);
@@ -369,24 +402,67 @@ atnowApp.config(
                             alert("Error: " + error.code + " " + error.message);
                             return error;
                         });
+                      },
+                      myNotifications: function(notifications){
+                        return notifications;
+                      }
+                    },
+                    views:{
+                        "content@": {
+                          controller: 'MainFeedController',   
+                          templateUrl: '/js/views/task/MainFeed.html'
+                        },
+                        "navbar@": {
+                          controller: 'NavBarController',
+                          templateUrl: '/js/views/navbar.html'
+                        }
+                    }
+                })
+                .state('app.newTask', {
+                    url: "/newTask",
+                    views:{
+                      "content@": {
+                        controller: 'TaskFormController',
+                        templateUrl: '/js/views/task/NewTask.html'
+                      },
+                      "navbar@": {
+                        controller: 'NavBarController',
+                        templateUrl: '/js/views/navbar.html'
+                      }
+                    },
+                    resolve:{
+                      myNotifications: function(notifications){
+                        return notifications;
                       }
                     }
                 })
-                .state('newTask', {
-                    url: "/newTask",
-                    controller: 'TaskFormController',
-                    templateUrl: '/js/views/task/NewTask.html'
-                })
                 .state('newUser', {
                     url: "/newUser",
-                    controller: 'UserFormController',
-                    templateUrl: '/js/views/user/NewUser.html'
+                    views:{
+                      "content@": {
+                        controller: 'UserFormController',
+                        templateUrl: '/js/views/user/NewUser.html'
+                      },
+                      "navbar@": {
+                        controller: 'NavBarController',
+                        templateUrl: '/js/views/navbar.html'
+                      }
+                    }
                 })
-                .state('dashboard', {
+                .state('app.dashboard', {
                     url: "/dashboard/:userId",
-                    controller: 'UserDetailController',
-                    templateUrl: '/js/views/user/UserDetail.html',
+                    views:{
+                      "content@": {
+                        controller: 'UserDetailController',
+                        templateUrl: '/js/views/user/UserDetail.html'
+                      },
+                      "navbar@": {
+                        controller: 'NavBarController',
+                        templateUrl: '/js/views/navbar.html'
+                      }
+                    },
                     resolve:{
+                      //we should do this on the client side
                       userTasks: function(Task, User, $stateParams){
                         var query = new Parse.Query(User);
                         return query.get($stateParams.userId).then(
@@ -462,13 +538,24 @@ atnowApp.config(
                             console.log(error.message);
                           }
                         );
+                      },
+                      myNotifications: function(notifications){
+                        return notifications;
                       }
                     }
                 })
-                .state('taskDetail', {
+                .state('app.taskDetail', {
                     url: "/task/:taskId",
-                    controller: 'TaskController',
-                    templateUrl: '/js/views/task/TaskPage.html',
+                    views:{
+                      "content@": {
+                        controller: 'TaskController',
+                        templateUrl: '/js/views/task/TaskPage.html'
+                      },
+                      "navbar@": {
+                        controller: 'NavBarController',
+                        templateUrl: '/js/views/navbar.html'
+                      }
+                    },
                     resolve:{
                       taskDetail:function(Task, $stateParams) {
                         var query = new Parse.Query(Task);
@@ -484,13 +571,29 @@ atnowApp.config(
                             return error;
                           }
                         });
+                      },
+                      myNotifications: function(notifications){
+                        return notifications;
                       }
                     }
                 })
                 .state('login', {
                     url: "/login",
-                    controller: "LoginController",
-                    templateUrl: "/js/views/user/Login.html"
+                    views:{
+                      "content": {
+                        controller: "LoginController",
+                        templateUrl: "/js/views/user/Login.html"
+                      },
+                      "navbar": {
+                        controller: 'NavBarController',
+                        templateUrl: '/js/views/navbar.html'
+                      }
+                    },
+                    resolve:{
+                      myNotifications: function(){
+                        return undefined;
+                      }
+                    }
                 });
 
 
@@ -500,12 +603,11 @@ atnowApp.run(function($rootScope, $state, $log, $location, User) {
   $rootScope.sessionUser = User.current();
  // Listen for state changes when using ui-router
   $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-    $log.log(toState.name + " " + $rootScope.sessionUser);
     //no need to redirect
     if(toState.name === "login"){
       if($rootScope.sessionUser){
         event.preventDefault();
-        $state.go("feed");
+        $state.go("app.feed");
       }
       return;
     }
@@ -564,14 +666,6 @@ atnowApp.factory("User", function(){
       this.set(phone, val);
     }
   });
-  Object.defineProperty(User.prototype, "rating", {
-    get: function() {
-      return this.get("rating");
-    },
-    set: function(val) {
-      this.set(rating, val);
-    }
-  });
   Object.defineProperty(User.prototype, "tasksClaimed", {
     get: function() {
       return this.get("tasksClaimed");
@@ -588,6 +682,14 @@ atnowApp.factory("User", function(){
       this.set(tasksRequested, val);
     }
   });
+  Object.defineProperty(User.prototype, "rating", {
+    get: function() {
+      return this.get("rating");
+    },
+    set: function(val) {
+      this.set(rating, val);
+    }
+  })
   return User;
 });
 
@@ -683,3 +785,4 @@ atnowApp.factory("Task", function(){
   });
   return Task;
 });
+
