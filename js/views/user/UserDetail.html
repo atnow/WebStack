@@ -25,13 +25,25 @@
               <strong>Rating</strong>
             </div>
             <div class="col-md-8">
-              <uib-rating ng-model="viewUser.rating.get('rating')" max="5" readonly="true" aria-labelledby="default-rating"></uib-rating>
-              (<span data-ng-bind="viewUser.rating.get('ratingCount')"></span>)
+              <div ng-if="rating != 0">
+                <uib-rating ng-model="rating" max="5" readonly="true" aria-labelledby="default-rating"></uib-rating>
+                (<span data-ng-bind="viewUser.rating.get('ratingCount')"></span>)
+              </div>
+              <div ng-if="rating == 0">
+                <span>This user has not yet been rated</span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <div ng-if="isUser()">
+                <a data-ng-href="#/app/editUser/{{viewUser.id}}"><button class="btn btn-default" type="edit">Edit</button></a>
+              </div>
             </div>
           </div>
         </div>
         <div class="col-md-4">
-          <span class="pull-right"><img data-ng-src="{{viewUser.profilePicture}}" class="user-image"></span>
+          <span class="pull-right"><img data-ng-src="{{viewUser.profilePicture.url()}}" class="user-image"></span>
         </div>
       </div>
       <div data-ng-controller="TaskTableController">
@@ -41,7 +53,9 @@
         <div class="row" class="ng-cloak" data-ng-show="isUser()">
           <div class="btn-group">
               <label class="btn btn-primary" ng-model="current.value" uib-btn-radio="'To-do'">To-do</label>
+              <label class="btn btn-primary" ng-model="current.value" uib-btn-radio="'Unclaimed'">Unclaimed</label>
               <label class="btn btn-primary" ng-model="current.value" uib-btn-radio="'Pending'">Pending</label>
+              <label class="btn btn-primary" ng-model="current.value" uib-btn-radio="'Awaiting Confirmation'">Awaiting Confirmation</label>
               <label class="btn btn-primary" ng-model="current.value" uib-btn-radio="'All'">All</label>
           </div>
         </div>
@@ -51,7 +65,6 @@
                 <tr>
                   <th data-st-sort="title" class="table-header"><span>Task</span></th>
                   <th data-st-sort="price" class="table-header"><span>Price</span></th>
-                  <!--<th data-st-sort="category" class="table-header"><span>Category</span></th>-->
                   <th data-st-sort="timeRequested" class="table-header"><span>Post time</span></th>
                   <th data-st-sort="expiration" class="table-header"><span>Expiration</span></th>
                   <th data-st-sort="completed" class="table-header"><span>Completed</span></th>
@@ -62,7 +75,6 @@
                 <tr data-ng-repeat="task in displayedTasks" data-ng>
                   <td data-ng-bind="task.title"></td>
                   <td data-ng-bind="task.price"></td>
-                  <!--<td data-ng-bind="task.category"></td>-->
                   <td data-ng-bind="(task.createdAt | date: 'MM/dd/yyyy h:mma')"></td>
                   <td data-ng-bind="(task.expiration | date: 'MM/dd/yyyy h:mma')"></td>
                   <td>

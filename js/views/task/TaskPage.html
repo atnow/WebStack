@@ -2,7 +2,12 @@
 
 <div class="row">
   <div class="col-md-10 col-md-offset-1">
-    <div class="page-header row"><h1 data-ng-bind="task.title"></h1></div>
+    <div class="page-header row">
+      <h1>
+        <span data-ng-bind="task.title"></span>
+        <span class="label" ng-class="{'label-default': taskStatus=='Unclaimed', 'label-warning': taskStatus=='In Progress', 'label-primary': taskStatus=='Awaiting Confirmation', 'label-success': taskStatus=='Complete'}" style="font-size:38%;bottom:5px;position:relative">{{taskStatus}}</span>
+      </h1>
+    </div>
 
     <div ng-show="task.accepted && isCompleter || isRequester">
       <div class="row">
@@ -10,7 +15,7 @@
           <strong>Task Requester</strong>
         </div>
         <div class="col-md-10 col-xs-8">
-          <a data-ng-href="#/dashboard/{{task.requester.id}}"><span data-ng-bind="task.requester.get('fullName')"></span></a>
+          <a data-ng-href="#/app/dashboard/{{task.requester.id}}"><span data-ng-bind="task.requester.get('fullName')"></span></a>
         </div>
       </div>
     </div>
@@ -21,17 +26,8 @@
           <strong>Task Completer</strong>
         </div>
         <div class="col-md-10 col-xs-8">
-          <a data-ng-href="#/dashboard/{{task.accepter.id}}"><span data-ng-bind="task.accepter.get('fullName')"></span></a>
+          <a data-ng-href="#/app/dashboard/{{task.accepter.id}}"><span data-ng-bind="task.accepter.get('fullName')"></span></a>
         </div>
-      </div>
-    </div>
-    
-    <div class="row">
-      <div class="col-md-2 col-xs-4">
-        <strong>Location</strong>
-      </div>
-      <div class="col-md-10 col-xs-8">
-        <span data-ng-bind="task.location"></span>
       </div>
     </div>
     
@@ -44,33 +40,12 @@
       </div>
     </div>
 
-    <div class="row">
+        <div class="row">
       <div class="col-md-2 col-xs-4">
-        <strong>Claimed</strong>
+        <strong>Location</strong>
       </div>
       <div class="col-md-10 col-xs-8">
-        <i data-ng-if="task.accepted == true" class="glyphicon glyphicon-ok" style="color:green"></i>
-        <i data-ng-if="task.accepted == false" class="glyphicon glyphicon-remove" style="color:red"></i>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-2 col-xs-4">
-        <strong>Completed</strong>
-      </div>
-      <div class="col-md-10 col-xs-8">
-        <i data-ng-if="task.completed == true" class="glyphicon glyphicon-ok" style="color:green"></i>
-        <i data-ng-if="task.completed == false" class="glyphicon glyphicon-remove" style="color:red"></i>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-2 col-xs-4">
-        <strong>Confirmed</strong>
-      </div>
-      <div class="col-md-10 col-xs-8">
-        <i data-ng-if="task.confirmed == true" class="glyphicon glyphicon-ok" style="color:green"></i>
-        <i data-ng-if="task.confirmed == false" class="glyphicon glyphicon-remove" style="color:red"></i>
+        <span data-ng-bind="task.location"></span>
       </div>
     </div>
     

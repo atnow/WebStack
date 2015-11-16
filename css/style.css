@@ -26,7 +26,6 @@ form {
 
 .label {
     width: 90px;
-    display: inline-block;
 }
 
 .center-container{
@@ -43,8 +42,7 @@ form {
 }
 
 .user-image{
-  height:80%;
-  width:80%;
+  max-height: 250px;
 }
 
 .st-sort-descent:after{

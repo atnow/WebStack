@@ -73,6 +73,17 @@ atnowApp.controller("TaskController", function($log, $scope, $stateParams, $root
     $scope.isRequester = true;
   }
 
+  $scope.taskStatus = '';
+  if (!$scope.task.accepted) {
+    $scope.taskStatus = 'Unclaimed';
+  } else if ($scope.task.accepted && !$scope.task.completed) {
+    $scope.taskStatus = 'In Progress';
+  } else if ($scope.task.completed && !$scope.task.confirmed) {
+    $scope.taskStatus = 'Awaiting Confirmation';
+  } else if ($scope.task.confirmed) {
+    $scope.taskStatus = 'Complete';
+  }
+
   $scope.completeTask = function(){
 
     var modalInstance = $uibModal.open({
@@ -121,8 +132,7 @@ atnowApp.controller("TaskController", function($log, $scope, $stateParams, $root
     var notification = new Notification();
     notification.save({type:"claimed", task: $scope.task, isRead: false, owner: $scope.task.get("requester")});    
     $scope.task.save();
-    // $state.go('feed');
-    $state.go('dashboard', {'userId': $rootScope.sessionUser.id});
+    $state.go('app.dashboard', {'userId': $rootScope.sessionUser.id});
   };
 
   $scope.confirmTask = function(){
@@ -150,11 +160,12 @@ atnowApp.controller("TaskController", function($log, $scope, $stateParams, $root
     });
 
     modalInstance.result.then(function () {
-      $scope.task.set("confirmed", true);
       var Notification = Parse.Object.extend("Notification");
       var notification = new Notification();
-      notification.save({type:"confirmed", task: $scope.task, isRead: false, owner: reviewUser});
+      notification.save({type:"confirmed", task: $scope.task, isRead: false, owner: $scope.task.accepter});
+      $scope.task.set("confirmed", true);
       $scope.task.save();
+      $state.go('app.dashboard', {'userId': $rootScope.sessionUser.id});
     });
   };
 
@@ -234,10 +245,12 @@ atnowApp.controller('TaskModalController', function ($scope, $uibModalInstance, 
   };
 });
 
-atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log, User, $stateParams, Task, userTasks, thisUser, todoTasks, pendingTasks){
+atnowApp.controller('UserDetailController', function($rootScope, $scope, $location, $log, User, $stateParams, 
+  Task, userTasks, thisUser, todoTasks, pendingTasks, unclaimedTasks, awaitingConfirmationTasks){
   $scope.viewUser = thisUser;
+  $scope.rating = thisUser.rating.get('rating');
   $scope.safeTasks= userTasks;
-  
+
   $scope.isUser = function(){
     $log.log(thisUser);
     $log.log($rootScope.sessionUser);
@@ -249,7 +262,6 @@ atnowApp.controller('UserDetailController', function($rootScope, $scope, $locati
   };
 
   if($scope.isUser()){
-    $log.log("To-do");
     $scope.current.value = 'To-do';
     $scope.safeTasks = todoTasks;
   }
@@ -257,20 +269,61 @@ atnowApp.controller('UserDetailController', function($rootScope, $scope, $locati
   $scope.$watch(
     'current.value',
     function(newValue, oldValue) {
-      if(newValue==='All'){
-        $scope.safeTasks=userTasks;
-        $log.log($scope.safeTasks);
-      }
       if(newValue==='To-do'){
         $scope.safeTasks=todoTasks;
       }
+      if(newValue==='Unclaimed'){
+        $scope.safeTasks=unclaimedTasks;
+      }
       if(newValue==='Pending'){
         $scope.safeTasks=pendingTasks;
+      }
+      if(newValue==='Awaiting Confirmation'){
+        $scope.safeTasks=awaitingConfirmationTasks;
+      }
+      if(newValue==='All'){
+        $scope.safeTasks=userTasks;
       }
     }
   );
 });
 
+atnowApp.controller('UserEditFormController', function($rootScope, $scope, $log, $state, thisUser){
+  $scope.editUser= {
+    phone:thisUser.phone,
+    fullName:thisUser.name
+  };
+  $scope.thisUser = thisUser;
+  $scope.profPic = {};
+
+  $scope.confirmEdit = function(){
+    var parseFile;
+    var fileUploadControl = $("#profilePicture")[0];
+    if (fileUploadControl.files.length > 0) {
+      var file = fileUploadControl.files[0];
+      var name = "profPic.png";
+
+      parseFile = new Parse.File(name, file);
+      parseFile.save().then(function(){
+        thisUser.set("profilePicture", parseFile);
+        thisUser.save();
+      },
+      function(error){
+        alert("Error: " + error.code + " " + error.message);
+        return error;
+      });
+    }
+    if ($scope.editUser.phone !== thisUser.phone) {
+      thisUser.set("phone", $scope.editUser.phone);
+    }
+    if ($scope.editUser.fullName !== thisUser.name) {
+      thisUser.set("fullName", $scope.editUser.fullName);
+    }
+    thisUser.save();
+    $state.go('app.dashboard',  {userId:$scope.thisUser.id});
+  };
+
+});
 
 atnowApp.controller('NavBarController', function($scope, $state, $rootScope, $log, $location, myNotifications) {
   $scope.signOut = function(){
@@ -436,16 +489,32 @@ atnowApp.config(
                       }
                     }
                 })
-                .state('newUser', {
-                    url: "/newUser",
+                .state('app.editUser', {
+                    url: "/editUser/:userId",
                     views:{
                       "content@": {
-                        controller: 'UserFormController',
-                        templateUrl: '/js/views/user/NewUser.html'
+                        controller: 'UserEditFormController',
+                        templateUrl: '/js/views/user/UserEdit.html',
                       },
                       "navbar@": {
                         controller: 'NavBarController',
                         templateUrl: '/js/views/navbar.html'
+                      }
+                    },
+                    resolve:{
+                      thisUser: function(User, $stateParams){
+                        var query = new Parse.Query(User);
+                        query.include('rating');
+                        return query.get($stateParams.userId).then(
+                          function(result){
+                            return result;
+                          },
+                          function(error){
+                            return error;
+                          });
+                      },
+                      myNotifications: function(notifications){
+                        return notifications;
                       }
                     }
                 })
@@ -523,7 +592,51 @@ atnowApp.config(
                         return query.get($stateParams.userId).then(
                           function(result){
                             var accepterQuery = new Parse.Query(Task);
+                            accepterQuery.equalTo("accepted", true);
+                            accepterQuery.equalTo("completed", false);
+                            accepterQuery.equalTo("requester", result);
+                            return accepterQuery.find().then(
+                              function(results) {
+                                return results;
+                              },
+                              function(error) {
+                                alert("Error: " + error.code + " " + error.message);
+                                return error;
+                              }); 
+                          },
+                          function(error){
+                            console.log(error.message);
+                          }
+                        );
+                      },
+                      unclaimedTasks: function(Task, User, $stateParams){
+                        var query = new Parse.Query(User);
+                        return query.get($stateParams.userId).then(
+                          function(result){
+                            var accepterQuery = new Parse.Query(Task);
+                            accepterQuery.equalTo("accepted", false);
+                            accepterQuery.equalTo("requester", result);
+                            return accepterQuery.find().then(
+                              function(results) {
+                                return results;
+                              },
+                              function(error) {
+                                alert("Error: " + error.code + " " + error.message);
+                                return error;
+                              }); 
+                          },
+                          function(error){
+                            console.log(error.message);
+                          }
+                        );
+                      },
+                      awaitingConfirmationTasks: function(Task, User, $stateParams){
+                        var query = new Parse.Query(User);
+                        return query.get($stateParams.userId).then(
+                          function(result){
+                            var accepterQuery = new Parse.Query(Task);
                             accepterQuery.equalTo("confirmed", false);
+                            accepterQuery.equalTo("completed", true);
                             accepterQuery.equalTo("requester", result);
                             return accepterQuery.find().then(
                               function(results) {
@@ -666,20 +779,12 @@ atnowApp.factory("User", function(){
       this.set(phone, val);
     }
   });
-  Object.defineProperty(User.prototype, "tasksClaimed", {
+  Object.defineProperty(User.prototype, "profilePicture", {
     get: function() {
-      return this.get("tasksClaimed");
+      return this.get("profilePicture");
     },
     set: function(val) {
-      this.set(tasksClaimed, val);
-    }
-  });
-  Object.defineProperty(User.prototype, "tasksRequested", {
-    get: function() {
-      return this.get("tasksRequested");
-    },
-    set: function(val) {
-      this.set(tasksRequested, val);
+      this.set(rating, val);
     }
   });
   Object.defineProperty(User.prototype, "rating", {
