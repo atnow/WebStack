@@ -1,0 +1,11 @@
+{
+  "applications": {
+    "_default": {
+      "link": "atnow"
+    },
+    "atnow": {
+      "parseAppId": "0oeGyi6DM6AwliCkDTBxr14OLcrgV3MYx1Gc4wHK",
+      "herokuAppId": "2e241763-b5c5-43ac-8a8b-294ce6d3bb26"
+    }
+  }
+}
