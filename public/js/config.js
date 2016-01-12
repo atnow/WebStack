@@ -283,7 +283,7 @@ angular
                     views:{
                       "content": {
                         controller: "LoginController",
-                        templateUrl: "/js/views/user/Login.html"
+                        templateUrl: "/js/views/user/login.html"
                       },
                       "navbar": {
                         controller: 'NavBarController',
