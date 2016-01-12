@@ -1,0 +1,49 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="row"><h3>Register</h3></div>
+      <div class="row">
+        <form data-ng-submit = "register()">
+          <div class="form-group">
+            <label for="inputName">Full Name</label>
+            <input type="text" class="form-control" id="inputName" placeholder="Phil Hanlon" data-ng-model="newUser.fullName">
+          </div>
+          <div class="form-group">
+            <label for="inputEmail">Valid .edu email</label>
+            <input type="email" class="form-control" id="inputEmail" placeholder="phil.j.hanlon.77@dartmouth.edu" data-ng-model="newUser.email">
+          </div>
+          <div class="form-group">
+            <label for="inputPassword">Password</label>
+            <input type="password" class="form-control" id="inputPassword" placeholder="Password" data-ng-model="newUser.password">
+          </div>
+          <div class="form-group">
+            <label for="inputPhone">Phone number</label>
+            <input type="tel" class="form-control" id="inputPhone" placeholder="(555) 555-5555" data-ng-model="newUser.phone">
+          </div>
+          <div>
+            <uib-alert data-ng-repeat="alert in registerAlerts" type="{{alert.type}}" close="closeRegisterAlert($index)" dismiss-on-timeout="2000">{{alert.msg}}</uib-alert>
+            <button class="btn btn-primary" type="submit">Register</button>
+          </div>          
+        </form>
+      </div>
+    </div>
+    <div class="col-md-4 col-md-offset-2">
+      <div class="row"><h3>Login</h3></div>
+      <div class="row">
+        <form data-ng-submit = "login()">
+          <div class="form-group">
+            <label for="loginEmail">Email</label>
+            <input type="email" class="form-control" id="loginEmail" placeholder="phil.j.hanlon.77@dartmouth.edu" data-ng-model="loginUser.email">
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" class="form-control" id="loginPassword" placeholder="Password" data-ng-model="loginUser.password">
+          </div>
+          <div>
+            <uib-alert data-ng-repeat="alert in loginAlerts" type="{{alert.type}}" close="closeLoginAlert($index)" dismiss-on-timeout="2000">{{alert.msg}}</uib-alert>
+            <button class="btn btn-primary" type="submit">Login</button>
+          </div>
+        </form>
+      </div>
+    </div>
+</div>

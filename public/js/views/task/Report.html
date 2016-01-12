@@ -1,0 +1,15 @@
+<div class="modal-header">
+	<h3 class="modal-title">Report <span data-ng-bind="username"></span></h3>
+</div>
+<div class="modal-body">
+	<div>
+		<strong>Describe the issue</strong>
+	</div>
+	<div>
+		<textarea data-ng-model="reportInformation" class="form-control"></textarea>
+	</div>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-danger" type="button" data-ng-click="report()">Report</button>
+	<button class="btn btn-default" type="button" data-ng-click="cancel()">Cancel</button>
+</div>

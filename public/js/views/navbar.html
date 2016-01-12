@@ -1,0 +1,38 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#atnow-navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle Navigation></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#/">@now</a>
+  </div>
+
+  <div class="collapse navbar-collapse" id="atnow-navbar-collapse">
+    <ul class="nav navbar-nav">
+      <li><a data-ng-href="#/app/feed" data-ng-show="sessionUser" class="ng-cloak">Feed</a></li>
+      <li>
+        <a data-ng-href="#/app/dashboard/{{sessionUser.id}}" data-ng-show="sessionUser" class="ng-cloak">Dashboard</a>
+      </li>
+      <li uib-dropdown on-toggle="toggled(open)">
+        <a class="ng-cloak" data-ng-show="sessionUser" data-ng-click="showNotifications()" uib-dropdown-toggle>
+          <i class="glyphicon glyphicon-bell"></i>
+        </a>
+        <ul class="uib-dropdown-menu" aria-labelledby="notifications">
+          <li data-ng-show="!noNotifications()" data-ng-repeat="notification in userNotifications">
+            <a href="#/app/task/{{notification.get('task').id}}">Task <strong>{{notification.get("task").title}}</strong> was {{notification.get("type")}}</a>
+          </li>
+          <li data-ng-show="noNotifications()">
+            <a href style="color:grey;">No notifications to show...</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a class="ng-cloak" data-ng-show="sessionUser">Signed in as {{sessionUser.name}}</a></li>
+      <li><button type="button" class="btn navbar-btn btn-default ng-cloak" data-ng-click="signOut()" data-ng-show="sessionUser">Sign out</button></li>
+    </ul>
+  </div>
+</nav>
