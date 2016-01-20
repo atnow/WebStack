@@ -27,6 +27,19 @@ angular
                     }
                   }
                 })
+                .state('app.auth', {
+                  url:"/auth/:authCode",
+                  views:{
+                        "content@": {
+                          controller: 'AuthController',
+                          templateUrl: '/js/views/user/auth.html'
+                        },
+                        "navbar@": {
+                          controller: 'NavBarController',
+                          templateUrl: '/js/views/navbar.html'
+                        }
+                    }
+                })
                 .state('app.feed', {
                     url: "/feed",
                     resolve:{

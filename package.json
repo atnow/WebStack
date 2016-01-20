@@ -18,5 +18,10 @@
   },
   "engines": {
     "node": "0.12.2"
+  },
+  "devDependencies": {
+    "karma": "^0.13.19",
+    "karma-chrome-launcher": "^0.2.2",
+    "karma-jasmine": "^0.3.6"
   }
 }

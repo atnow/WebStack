@@ -54,6 +54,22 @@ angular.module('atnowApp').factory("User", function(){
       this.set(rating, val);
     }
   });
+  Object.defineProperty(User.prototype, "venmoAccessToken", {
+    get: function() {
+      return this.get("venmoAccessToken");
+    },
+    set: function(val) {
+      this.set(venmoAccessToken, val);
+    }
+  });
+  Object.defineProperty(User.prototype, "venmoPhoneNumber", {
+    get: function() {
+      return this.get("venmoPhoneNumber");
+    },
+    set: function(val) {
+      this.set(venmoPhoneNumber, val);
+    }
+  });
   Object.defineProperty(User.prototype, "rating", {
     get: function() {
       return this.get("rating");
@@ -61,7 +77,7 @@ angular.module('atnowApp').factory("User", function(){
     set: function(val) {
       this.set(rating, val);
     }
-  })
+  });
   return User;
 });
 
