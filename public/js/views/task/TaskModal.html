@@ -1,0 +1,70 @@
+<div class="modal-header">
+	<div class="row" style="margin-left:10px;">
+    <div class = "pull-left">
+      <h3 class="modal-title"><span data-ng-bind="taskName"></span><span class="label" ng-class="{'label-default': taskStatus=='Unclaimed', 'label-warning': taskStatus=='In Progress', 'label-primary': taskStatus=='Awaiting Confirmation', 'label-success': taskStatus=='Complete'}" style="font-size:50%;bottom:5px;position:relative; margin-left: 10px;">{{taskStatus}}</span></h3>
+    </div>
+    <div class = "pull-right">
+      <i class="glyphicon glyphicon-remove" style="right:20px; font-size:125%; top:6px" data-ng-click="cancel()" id="closeModal"></i>
+    </div>
+  </div>
+	<div class="row" style="margin-left:10px; margin-top:10px;">
+		<div style="display:inline-block; float:left">
+			<p style="display:block; margin:0">Complete by <span data-ng-bind="(task.expiration | date: 'MM/dd/yyyy')"></span>,</p>
+			<p style="display:block" data-ng-bind="(task.expiration | date:'h:mma')"></p>
+			<p style="margin:0; position:relative; top: 20px">Deliver to <strong data-ng-bind="location"></strong></p>
+		</div>
+		<div ng-show="!isRequester" style="display:inline-block; margin-right:40px; float:right;">
+			<a data-ng-href="#/app/dashboard/{{task.requester.id}}" data-ng-click="cancel()"><div modal-Img="{{task.requester.profilePicture.url()}}"></div></a>
+			<a data-ng-href="#/app/dashboard/{{task.requester.id}}" data-ng-click="cancel()"><span data-ng-bind="task.requester.get('fullName')"></span></a>
+		</div>
+		<div ng-show="isRequester" style="display:inline-block; margin-right:40px; float:right">
+			<a data-ng-href="#/app/dashboard/{{task.accepter.id}}" data-ng-click="cancel()"><div modal-Img="{{task.accepter.profilePicture.url()}}"></div></a>
+			<a data-ng-href="#/app/dashboard/{{task.accepter.id}}" data-ng-click="cancel()"><span data-ng-bind="task.accepter.get('fullName')"></span></a>
+		</div>
+	</div>
+</div>
+
+<div class="modal-body">
+	<div class="row" style="border-bottom-style:solid; border-width:1px; padding-bottom:15px; border-color:#e5e5e5">
+		<div class="task-modal-col" style="margin-left:1%;">
+			<strong style="display:block" class="top-descriptor">$<span data-ng-bind="price"></span></strong>
+			<span style="display:block">Price</span>
+		</div>
+		<div class="task-modal-col">
+			<strong style="display:block" class="top-descriptor" data-ng-bind="taskCode.timeRemaining(task.expiration)"></strong>
+			<span style="display:block">Time Left</span>
+		</div>
+		<div class="task-modal-col" data-ng-if="task.requiresLifting == true">
+			<span title="Requires Car" style="display:block" class="top-descriptor"><img class="png-icon" src="/js/views/requiresLifting.png" style="width: 25px;"></span>
+				<span style="display:block">Physical Activity</span>
+		</div>
+		<div class="task-modal-col" data-ng-if="task.requiresPurchase == true">
+			<span title="Requires Car" style="display:block" class="top-descriptor"><img class="png-icon" src="/js/views/requiresPurchase.png" style="width: 25px;"></span>
+			<span style="display:block">Purchase</span>
+		</div>
+		<div class="task-modal-col" data-ng-if="task.requiresCar == true">
+			<span title="Requires Car" style="display:block" class="top-descriptor"><img class="png-icon" src="/js/views/requiresCar.png" style="width: 25px;"></span>
+			<span style="display:block">Car</span>
+		</div>
+	</div>
+	<div class="row" style="padding-left:25px; padding-top:15px">
+		<p data-ng-bind="description"></p>
+	</div>
+</div>
+
+<div class="modal-footer" style="border-style:none">
+	<div ng-if="task.accepted == false && isRequester == true">
+		<button id="deleteTask" class="btn btn-danger" data-ng-click="deleteTask()" value="Delete Task"><span>Delete Task</span></button>
+	</div>
+	<div ng-if="task.completed == false && isCompleter">
+		<button id="completeTask" class="btn btn-success" data-ng-click="completeTask()" value="Complete Task"><span>Complete Task</span></button>
+		<button id="relinquishTask" class="btn btn-danger" data-ng-click="relinquishTask()" value="Relinquish Task"><span>Give Up Task</span></button>
+	</div>
+	<div ng-if="task.accepted == false && isRequester == false">
+		<button id="claimTask" class="btn btn-primary" data-ng-click="claimTask()" value="Claim Task"><span>Claim Task</span></button>
+	</div>
+	<div ng-if="task.completed == true && task.confirmed == false && isRequester == true">
+		<button id="confirmTask" class="btn btn-success" data-ng-click="confirmTask()" value="Confirm Task"><span>Task Was Completed</span></button>
+		<button id="Report" class="btn btn-danger" data-ng-click="reportUser()" value="Report User"><span>Task Was Not Finished</span></button>
+	</div>
+</div>

@@ -1,0 +1,37 @@
+<div class="modal-header">
+	<h3 class="modal-title">Rate <span data-ng-bind="username"></span></h3>
+</div>
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-8 col-md-offset-3">
+    	<uib-rating ng-model="rate" max="max" readonly="false" on-hover="hoveringOver(value)" on-leave="overStar = null" aria-labelledby="default-rating"></uib-rating>
+    	<span class="label" ng-class="{'label-danger': overStar==1, 'label-warning': overStar==2, 'label-default': overStar==3, 'label-primary': overStar==4, 'label-success': overStar==5}" ng-show="overStar && !isReadonly">{{ratingType}}</span>
+    </div>
+  </div>
+  <div ng-if="payment">
+    <div class="row">
+      <div class="col-md-7">
+        <span>Venmo payment</span>
+      </div>
+      <div class="col-md-4">
+          <input id="price" type="number" disabled="true" class="form-control" data-ng-model="payment"/>
+      </div>
+      <div class="col-md-7">
+        <span>Extra Costs/Tip</span>
+      </div>
+      <div class="col-md-4">
+          <input id="price" type="number" min="0" class="form-control" data-ng-model="tipAmount.value">
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <div ng-if="payment">
+    <button class="btn btn-success" type="button" data-ng-click="payUser()">Pay</button>
+    <button class="btn btn-default" type="button" data-ng-click="cancel()">Cancel</button>
+  </div>
+  <div ng-if="payment == false">
+	 <button class="btn btn-primary" type="button" data-ng-click="rateUser()">Rate</button>
+   <button class="btn btn-default" type="button" data-ng-click="cancel()">Cancel</button>
+  </div>
+</div>

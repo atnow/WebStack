@@ -1,0 +1,63 @@
+<div id="landing-div">
+  <div class="container">
+    <div id="login-div" class="ng-cloak" ng-show="login">
+      <div>
+        <form name="loginForm" ng-submit="logIn()" id="login-form">
+            <div class="row">
+              <div class="form-group">
+                <input type="email" name="email" class="login-form form-control ng-valid-required ng-touched ng-dirty ng-valid-server ng-valid ng-valid-email" placeholder="Email" required server-error="" data-ng-model="loginUser.email">
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group">
+                <input type="password" name="password" class="login-form form-control ng-valid-required ng-touched ng-dirty ng-valid-server ng-valid ng-valid-email" placeholder="Password" required server-error="" data-ng-model="loginUser.password">
+              </div>
+            </div>
+            <div class="row">
+              <div class="submit-div">
+                <button class="btn login-button-submit" type="submit"><strong>LOGIN</strong></button>
+              </div>
+            </div>
+        </form>
+        </div>
+    </div>
+    <div class="jumbotron" id="landing-tron">
+      <h1 class="display-3" style="position:relative"><strong>@now</strong></h1>
+      <p class="lead" style="position:relative">A task marketplace for college students</p>
+      <hr class="m-y-2">
+      <p>Post things you need done and complete them for your peers</p>
+    </div>
+    <div class="row" style="margin: 0 auto 0 auto; color:white; text-align: center; max-width:400px;">
+        <h2>New to <strong>@now</strong>?<h2> 
+    </div>
+    <div class="register-div row">
+      <div style="max-width:300px; margin:0 auto 0 auto;">
+        <div class="row" style="margin: 0 auto 0 auto; color:white; text-align: center;">
+          <h3 style="margin-top:10px">Register now</h3>
+        </div>
+        <form name="signUpForm" ng-submit="register()" id="signUpForm">
+          <div class="row">
+            <div class="form-group">
+              <input type="fullname" name="fullname" data-ng-model="newUser.name" class="signup-form form-control ng-valid-required ng-touched ng-dirty ng-valid-server ng-valid ng-valid-email" placeholder="Enter your full name" ng-required="" server-error="">
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group">
+              <input type="email" name="email" data-ng-model="newUser.email" class="signup-form form-control ng-valid-required ng-touched ng-dirty ng-valid-server ng-valid ng-valid-email" placeholder="Enter your .edu email" ng-required="" server-error="">
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group">
+              <input type="password" name="password" data-ng-model="newUser.password" class="signup-form form-control ng-valid-required ng-touched ng-dirty ng-valid-server ng-valid ng-valid-email" placeholder="Enter a password" ng-required="" server-error="">
+            </div>
+          </div>
+          <div class="row" style="margin-bottom:30px">
+            <div class="submit-div">
+              <button class="btn btn-success" type="submit"><strong>GET STARTED</strong></button>
+            </div>
+          </div>    
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

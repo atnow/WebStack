@@ -1,0 +1,92 @@
+<form id="taskForm" class="form-horizontal">
+  <div class="modal-header">
+    <div class="row">
+      <div class = "pull-left" style="margin-left:20px; width: 80%">
+        <input id="title" type="text" placeholder="Task Title" class="form-control task-title {{invalidTitleClass}}" data-ng-model="newTask.title" 
+          uib-tooltip="Title is a required field for a new task"
+          tooltip-placement="right"
+          tooltip-trigger="click"
+          tooltip-enable="invalidTitle"
+          tooltip-is-open="invalidTitle"/>
+      </div>
+      <div class = "pull-right">
+        <i class="glyphicon glyphicon-remove" style="right:20px; font-size:125%; top:6px" data-ng-click="cancel()" id="closeModal"></i>
+      </div>
+    </div>
+    <div class='row' style="margin-top:10px">
+      <label style='font-weight:400; margin-left:20px;'>Deliver to</label>
+      <input type="text" class="form-control" placeholder="Location" data-ng-model="newTask.location" style="width: 50%; display: inline-block; margin-left:3px;"/>
+    </div>
+  </div>
+
+  <div class="modal-body">
+    <div class="create-task-modal-col-4" style="margin-left:1%;">
+      <input id="price" type="number" min="0" class="form-control {{invalidPriceClass}}" placeholder="5.75" data-ng-model="newTask.price" style="width: 50%;
+    margin: auto;"
+        uib-tooltip="Price must be a valid non-negative number with no special characters"
+        tooltip-placement="bottom"
+        tooltip-trigger="click"
+        tooltip-enable="invalidPrice"
+        tooltip-is-open="invalidPrice"/>
+      <span style="display:block">Price</span>
+    </div>
+    <div class="create-task-modal-col-4">
+      <sm-button>
+        <div data-ng-show="newTask.requiresCar">
+          <img class="png-icon hover-entry" src="/js/views/requiresCar.png" data-ng-click="carCheck()">
+        </div>
+        <div data-ng-show="!newTask.requiresCar">
+          <img class="png-icon hover-entry" src="/js/views/requiresCarGrey.png" data-ng-click="carCheck()">
+        </div>
+      </sm-button>
+      <span style="display:block">Car</span>
+    </div>
+    <div class="create-task-modal-col-4">
+      <sm-button>
+        <div data-ng-show="newTask.requiresPurchase">
+          <img class="png-icon hover-entry" src="/js/views/requiresPurchase.png" data-ng-click="purchaseCheck()">
+        </div>
+        <div data-ng-show="!newTask.requiresPurchase">
+          <img class="png-icon hover-entry" src="/js/views/requiresPurchaseGrey.png" data-ng-click="purchaseCheck()">
+        </div>
+      </sm-button>
+      <span style="display:block">Purchase</span>
+    </div>
+    <div class="create-task-modal-col-4">
+      <sm-button>
+        <div data-ng-show="newTask.requiresLifting">
+          <img class="png-icon hover-entry" src="/js/views/requiresLifting.png" data-ng-click="liftingCheck()">
+        </div>
+        <div data-ng-show="!newTask.requiresLifting">
+          <img class="png-icon hover-entry" src="/js/views/requiresLiftingGrey.png" data-ng-click="liftingCheck()">
+        </div>
+      </sm-button>
+      <span style="display:block">Physical Activity</span>
+    </div>
+  </div>
+  <div class='second-modal-body'>
+    <div class="create-task-modal-col-2 left-create-task-wrapper" style="margin-left:1%;">
+      <div class="left-create-task">
+        <span>Complete By</span>
+        <uib-timepicker data-ng-model="mytime" id="expirationTime" data-ng-change="changed()" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian" style="margin:auto;"></uib-timepicker>
+        <div class="input-group {{invalidTimeClass}}" style="margin:auto; width:70%;">
+          <input id="expirationDate" type="text" class="form-control {{invalidTimeClass}}" uib-datepicker-popup="{{format}}" ng-model="expiration" is-open="status.opened" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close"
+          uib-tooltip="Completion time must be in the future"
+          tooltip-placement="bottom"
+          tooltip-trigger="click"
+          tooltip-enable="invalidTime"
+          tooltip-is-open="invalidTime" />
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default {{invalidTimeClass}}" data-ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </div> 
+      </div>
+    </div>
+    <div class="create-task-modal-col-2 right-create-task">
+      <textarea id="description" class="form-control" type="text-area" rows='7'; form="taskForm" placeholder="further instructions" data-ng-model="newTask.description"/>
+    </div>
+  </div>
+  <div class="modal-footer ignore-line">
+    <input id="submitTask" type="submit" class="btn btn-primary" data-ng-click="commitTask()">
+  </div>
+<form id="taskForm" class="form-horizontal">
